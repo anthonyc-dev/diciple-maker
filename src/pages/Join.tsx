@@ -126,7 +126,7 @@ const Join = () => {
                       id="firstName"
                       name="firstName"
                       type="text"
-                      placeholder="John"
+                      placeholder="First name"
                       value={formData.firstName}
                       onChange={handleChange}
                       className="bg-background border-border"
@@ -142,7 +142,7 @@ const Join = () => {
                       id="lastName"
                       name="lastName"
                       type="text"
-                      placeholder="Doe"
+                      placeholder="Last name"
                       value={formData.lastName}
                       onChange={handleChange}
                       className="bg-background border-border"
@@ -159,7 +159,7 @@ const Join = () => {
                     id="email"
                     name="email"
                     type="email"
-                    placeholder="john@example.com"
+                    placeholder="your@example.com"
                     value={formData.email}
                     onChange={handleChange}
                     className="bg-background border-border"
