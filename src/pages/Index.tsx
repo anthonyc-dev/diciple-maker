@@ -3,6 +3,7 @@ import { ArrowRight, Users, Globe, Heart, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BibleVerse from "@/components/about/BibleVerse";
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
             alt="Disciples gathering together"
             className="w-full h-full object-cover opacity-90"
           />
+
           {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-hero/60 to-hero" />
         </div>
@@ -52,9 +54,16 @@ const Index = () => {
             </Link>
           </div>
         </div>
+        {/* Torn Paper Effect */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-24 bg-background"
+          style={{
+            clipPath:
+              "polygon(0 60%, 5% 55%, 10% 70%, 15% 50%, 20% 65%, 25% 45%, 30% 60%, 35% 40%, 40% 55%, 45% 35%, 50% 50%, 55% 30%, 60% 45%, 65% 25%, 70% 40%, 75% 20%, 80% 35%, 85% 15%, 90% 30%, 95% 10%, 100% 25%, 100% 100%, 0 100%)",
+          }}
+        />
 
         {/* Decorative elements */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
       </section>
 
       {/* Features Section */}

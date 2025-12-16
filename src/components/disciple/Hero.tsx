@@ -42,7 +42,7 @@ const Hero = () => {
             Transform your faith into a movement that changes lives.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          {/* <div className="flex flex-col sm:flex-row gap-4">
             <Button
               size="lg"
               className="bg-hero-accent text-primary-foreground hover:bg-hero-accent/90 font-semibold text-base px-8 group"
@@ -57,7 +57,7 @@ const Hero = () => {
             >
               Learn More
             </Button>
-          </div>
+          </div> */}
         </div>
 
         {/* Side Text */}

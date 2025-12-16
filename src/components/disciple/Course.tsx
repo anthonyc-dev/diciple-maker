@@ -1,36 +1,48 @@
-import { BookOpen, Users, Globe, Heart, MessageCircle, Compass } from "lucide-react";
+import {
+  BookOpen,
+  Users,
+  Globe,
+  Heart,
+  MessageCircle,
+  Compass,
+} from "lucide-react";
 
 const courseModules = [
   {
     icon: Heart,
     title: "Intimacy with God",
-    description: "Develop a deeper personal relationship with Christ as the foundation for all ministry."
+    description:
+      "Develop a deeper personal relationship with Christ as the foundation for all ministry.",
   },
   {
     icon: BookOpen,
     title: "Biblical Foundations",
-    description: "Study Jesus' disciple-making methods and apply them in your context."
+    description:
+      "Study Jesus' disciple-making methods and apply them in your context.",
   },
   {
     icon: Users,
     title: "Relational Discipleship",
-    description: "Learn to build authentic relationships that lead to spiritual transformation."
+    description:
+      "Learn to build authentic relationships that lead to spiritual transformation.",
   },
   {
     icon: MessageCircle,
     title: "Gospel Conversations",
-    description: "Master the art of sharing your faith naturally and effectively."
+    description:
+      "Master the art of sharing your faith naturally and effectively.",
   },
   {
     icon: Compass,
     title: "Leadership Development",
-    description: "Grow as a leader who empowers others to lead."
+    description: "Grow as a leader who empowers others to lead.",
   },
   {
     icon: Globe,
     title: "Movement Multiplication",
-    description: "Understand how movements form and how to catalyze them in your community."
-  }
+    description:
+      "Understand how movements form and how to catalyze them in your community.",
+  },
 ];
 
 const Course = () => {
@@ -45,14 +57,15 @@ const Course = () => {
             Disciple-Making in the Real World
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Our comprehensive course goes beyond merely imparting methods—it aims to 
-            ignite a spiritual awakening that has the potential to shake nations.
+            Our comprehensive course goes beyond merely imparting methods—it
+            aims to ignite a spiritual awakening that has the potential to shake
+            nations.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {courseModules.map((module, index) => (
-            <div 
+            <div
               key={index}
               className="bg-card p-8 rounded-lg border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg group"
             >
