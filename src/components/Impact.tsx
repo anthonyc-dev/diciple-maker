@@ -19,22 +19,32 @@ const Impact = () => {
               Changing Lives Despite Persecution
             </h2>
             <p className="text-hero-foreground/70 text-lg mb-8 leading-relaxed">
-              We currently have disciple-makers being trained by underground church 
-              leaders in areas of intense persecution across the globe. Our network 
-              spans over 70 countries, reaching the unreached.
+              We currently have disciple-makers being trained by underground
+              church leaders in areas of intense persecution across the globe.
+              Our network spans over 70 countries, reaching the unreached.
             </p>
 
             <div className="grid grid-cols-3 gap-8">
               <div className="text-center">
-                <p className="text-hero-accent text-4xl md:text-5xl font-bold">70+</p>
-                <p className="text-hero-foreground/60 text-sm mt-2">Countries</p>
+                <p className="text-hero-accent text-4xl md:text-5xl font-bold">
+                  70+
+                </p>
+                <p className="text-hero-foreground/60 text-sm mt-2">
+                  Countries
+                </p>
               </div>
               <div className="text-center">
-                <p className="text-hero-accent text-4xl md:text-5xl font-bold">5K+</p>
-                <p className="text-hero-foreground/60 text-sm mt-2">Disciples</p>
+                <p className="text-hero-accent text-4xl md:text-5xl font-bold">
+                  5K+
+                </p>
+                <p className="text-hero-foreground/60 text-sm mt-2">
+                  Disciples
+                </p>
               </div>
               <div className="text-center">
-                <p className="text-hero-accent text-4xl md:text-5xl font-bold">200+</p>
+                <p className="text-hero-accent text-4xl md:text-5xl font-bold">
+                  200+
+                </p>
                 <p className="text-hero-foreground/60 text-sm mt-2">Churches</p>
               </div>
             </div>
@@ -44,11 +54,15 @@ const Impact = () => {
             {regions.map((region, index) => (
               <div key={index}>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-hero-foreground font-medium">{region.name}</span>
-                  <span className="text-hero-foreground/60 text-sm">{region.countries}</span>
+                  <span className="text-hero-foreground font-medium">
+                    {region.name}
+                  </span>
+                  <span className="text-hero-foreground/60 text-sm">
+                    {region.countries}
+                  </span>
                 </div>
                 <div className="h-2 bg-hero-foreground/10 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-hero-accent rounded-full transition-all duration-1000"
                     style={{ width: `${region.percentage}%` }}
                   />

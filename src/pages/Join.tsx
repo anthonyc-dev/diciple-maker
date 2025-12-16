@@ -26,7 +26,12 @@ const Join = () => {
     setIsSubmitting(true);
 
     // Basic validation
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.phone
+    ) {
       toast({
         title: "Error",
         description: "Please fill in all fields.",
@@ -63,7 +68,7 @@ const Join = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-hero">
         <div className="container mx-auto px-6 text-center">
@@ -74,7 +79,8 @@ const Join = () => {
             Join the <span className="text-hero-accent">Movement</span>
           </h1>
           <p className="text-xl text-hero-foreground/80 max-w-2xl mx-auto">
-            Take the first step in becoming a disciple who makes disciples. Fill out the form below to get started.
+            Take the first step in becoming a disciple who makes disciples. Fill
+            out the form below to get started.
           </p>
         </div>
       </section>
@@ -87,7 +93,7 @@ const Join = () => {
               <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
                 Registration Form
               </h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -105,7 +111,7 @@ const Join = () => {
                       required
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="lastName" className="text-foreground">
                       Last Name
@@ -147,7 +153,7 @@ const Join = () => {
                     id="phone"
                     name="phone"
                     type="tel"
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="09xxxxxxxxx"
                     value={formData.phone}
                     onChange={handleChange}
                     className="bg-background border-border"
@@ -165,7 +171,8 @@ const Join = () => {
               </form>
 
               <p className="text-muted-foreground text-sm text-center mt-6">
-                By submitting this form, you agree to be contacted about the discipleship course.
+                By submitting this form, you agree to be contacted about the
+                discipleship course.
               </p>
             </div>
           </div>

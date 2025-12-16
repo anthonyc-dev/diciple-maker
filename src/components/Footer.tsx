@@ -10,7 +10,7 @@ const Footer = () => {
               <span className="text-hero-accent">D</span>ISCIPLING
             </h3>
             <p className="text-hero-foreground/60 leading-relaxed max-w-md">
-              A practical course in becoming a disciple who makes disciples. 
+              A practical course in becoming a disciple who makes disciples.
               Transforming lives and creating movements across the globe.
             </p>
           </div>
@@ -21,22 +21,34 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               <li>
-                <a href="#about" className="text-hero-foreground/60 hover:text-hero-accent transition-colors text-sm">
+                <a
+                  href="#about"
+                  className="text-hero-foreground/60 hover:text-hero-accent transition-colors text-sm"
+                >
                   About
                 </a>
               </li>
               <li>
-                <a href="#course" className="text-hero-foreground/60 hover:text-hero-accent transition-colors text-sm">
+                <a
+                  href="#course"
+                  className="text-hero-foreground/60 hover:text-hero-accent transition-colors text-sm"
+                >
                   Course
                 </a>
               </li>
               <li>
-                <a href="#impact" className="text-hero-foreground/60 hover:text-hero-accent transition-colors text-sm">
+                <a
+                  href="#impact"
+                  className="text-hero-foreground/60 hover:text-hero-accent transition-colors text-sm"
+                >
                   Global Impact
                 </a>
               </li>
               <li>
-                <a href="#testimonials" className="text-hero-foreground/60 hover:text-hero-accent transition-colors text-sm">
+                <a
+                  href="#testimonials"
+                  className="text-hero-foreground/60 hover:text-hero-accent transition-colors text-sm"
+                >
                   Stories
                 </a>
               </li>
@@ -69,10 +81,16 @@ const Footer = () => {
             © 2024 Discipling Disciples. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <a href="#" className="text-hero-foreground/40 hover:text-hero-accent transition-colors text-sm">
+            <a
+              href="#"
+              className="text-hero-foreground/40 hover:text-hero-accent transition-colors text-sm"
+            >
               Privacy Policy
             </a>
-            <a href="#" className="text-hero-foreground/40 hover:text-hero-accent transition-colors text-sm">
+            <a
+              href="#"
+              className="text-hero-foreground/40 hover:text-hero-accent transition-colors text-sm"
+            >
               Terms of Service
             </a>
           </div>

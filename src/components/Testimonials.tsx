@@ -2,23 +2,26 @@ import { Quote } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "This course transformed not just my understanding of discipleship, but my entire approach to following Jesus. I've seen three people come to faith in my own neighborhood.",
+    quote:
+      "This course transformed not just my understanding of discipleship, but my entire approach to following Jesus. I've seen three people come to faith in my own neighborhood.",
     name: "Sarah M.",
     location: "California, USA",
-    role: "Homeschool Mom"
+    role: "Homeschool Mom",
   },
   {
-    quote: "In a region where sharing faith can cost you everything, this training gave me the tools and courage to plant an underground community of believers.",
+    quote:
+      "In a region where sharing faith can cost you everything, this training gave me the tools and courage to plant an underground community of believers.",
     name: "Ahmed K.",
     location: "Middle East",
-    role: "Underground Church Leader"
+    role: "Underground Church Leader",
   },
   {
-    quote: "I went from being a consumer of faith to a producer of disciples. The practical methods combined with deep spiritual formation changed everything.",
+    quote:
+      "I went from being a consumer of faith to a producer of disciples. The practical methods combined with deep spiritual formation changed everything.",
     name: "David L.",
     location: "Sydney, Australia",
-    role: "Business Professional"
-  }
+    role: "Business Professional",
+  },
 ];
 
 const Testimonials = () => {
@@ -39,7 +42,7 @@ const Testimonials = () => {
 
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div 
+            <div
               key={index}
               className="bg-card p-8 rounded-lg border border-border relative"
             >
@@ -48,8 +51,12 @@ const Testimonials = () => {
                 "{testimonial.quote}"
               </p>
               <div className="border-t border-border pt-4">
-                <p className="text-foreground font-semibold">{testimonial.name}</p>
-                <p className="text-muted-foreground text-sm">{testimonial.role}</p>
+                <p className="text-foreground font-semibold">
+                  {testimonial.name}
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  {testimonial.role}
+                </p>
                 <p className="text-primary text-sm">{testimonial.location}</p>
               </div>
             </div>
