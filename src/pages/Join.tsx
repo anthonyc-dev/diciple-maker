@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { motion } from "framer-motion";
 
 const Join = () => {
   const { toast } = useToast();
@@ -72,21 +73,42 @@ const Join = () => {
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-hero">
         <div className="container mx-auto px-6 text-center">
-          <p className="text-hero-foreground/70 text-sm tracking-widest uppercase mb-4">
+          <motion.p
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+            className="text-hero-foreground/70 text-sm tracking-widest uppercase mb-4"
+          >
             Begin your journey
-          </p>
-          <h1 className="text-4xl md:text-6xl font-bold text-hero-foreground mb-6">
+          </motion.p>
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold text-hero-foreground mb-6"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+          >
             Join the <span className="text-hero-accent">Movement</span>
-          </h1>
-          <p className="text-xl text-hero-foreground/80 max-w-2xl mx-auto">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+            className="text-xl text-hero-foreground/80 max-w-2xl mx-auto"
+          >
             Take the first step in becoming a disciple who makes disciples. Fill
             out the form below to get started.
-          </p>
+          </motion.p>
         </div>
       </section>
 
       {/* Form Section */}
-      <section className="py-20 bg-muted">
+      <motion.section
+        className="py-20 bg-muted"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="container mx-auto px-6">
           <div className="max-w-xl mx-auto">
             <div className="bg-card rounded-xl p-8 md:p-12 shadow-lg border border-border">
@@ -177,7 +199,7 @@ const Join = () => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <Footer />
     </div>

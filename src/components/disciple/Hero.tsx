@@ -1,8 +1,16 @@
 import heroImage from "@/assets/hero-disciples.jpg";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { motion, Variants } from "framer-motion";
 
 const Hero = () => {
+  const fadeInUp: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.7, ease: "easeOut" },
+    },
+  };
+
   return (
     <section className="relative min-h-screen flex items-center bg-hero overflow-hidden">
       {/* Background Image with Overlay */}
@@ -26,23 +34,38 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative container mx-auto px-6 pt-24 pb-32">
-        <div className="max-w-3xl">
-          <p className="text-hero-accent text-sm md:text-base tracking-[0.3em] mb-4 font-medium">
-            A GLOBAL MOVEMENT IS RISING
-          </p>
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          transition={{ staggerChildren: 0.2 }}
+          className="max-w-3xl"
+        >
+          <motion.p
+            variants={fadeInUp}
+            className="text-hero-accent text-sm md:text-base tracking-[0.3em] mb-4 font-medium"
+          >
+            MOVEMENT IS RISING
+          </motion.p>
 
-          <h1 className="text-hero-foreground text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-none mb-6">
-            DISCIPLING
+          <motion.h1
+            variants={fadeInUp}
+            className="text-hero-foreground text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-none mb-6"
+          >
+            Making <span className="text-hero-accent">Disciples</span>
             <br />
-            <span className="text-hero-accent">DISCIPLES</span>
-          </h1>
+            Who Make Disciples
+          </motion.h1>
 
-          <p className="text-hero-foreground/80 text-lg md:text-xl max-w-xl mb-8 leading-relaxed">
-            A practical course in becoming a disciple who makes disciples.
-            Transform your faith into a movement that changes lives.
-          </p>
+          <motion.p
+            variants={fadeInUp}
+            className="text-hero-foreground/80 text-lg md:text-xl max-w-xl mb-8 leading-relaxed"
+          >
+            Join a transformative journey of faith, community, and purpose. We
+            equip believers to reach the lost and build movements that change
+            nations.
+          </motion.p>
 
-          {/* <div className="flex flex-col sm:flex-row gap-4">
+          {/* <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
             <Button
               size="lg"
               className="bg-hero-accent text-primary-foreground hover:bg-hero-accent/90 font-semibold text-base px-8 group"
@@ -57,16 +80,20 @@ const Hero = () => {
             >
               Learn More
             </Button>
-          </div> */}
-        </div>
+          </motion.div> */}
+        </motion.div>
 
         {/* Side Text */}
-        <div className="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 text-right">
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+          className="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 text-right"
+        >
           <p className="text-hero-foreground/60 text-sm tracking-[0.2em] max-w-xs leading-relaxed">
-            THERE IS A GLOBAL MOVEMENT OF DISCIPLES OF CHRIST RISING IN THE
-            EARTH
+            THERE IS A GROUP MOVEMENT OF DISCIPLES OF CHRIST RISING IN THE EARTH
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

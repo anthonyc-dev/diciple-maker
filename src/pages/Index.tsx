@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BibleVerse from "@/components/about/BibleVerse";
+import { motion } from "framer-motion";
 
 const Index = () => {
   return (
@@ -25,7 +26,12 @@ const Index = () => {
           {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-hero/60 to-hero" />
         </div>
-        <div className="container mx-auto px-6 text-center relative z-10 pt-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="container mx-auto px-6 text-center relative z-10 pt-20"
+        >
           <p className="text-hero-foreground/70 text-sm md:text-base tracking-widest uppercase mb-6 animate-fade-in">
             There is a global movement of disciples of Christ rising in the
             earth
@@ -53,7 +59,7 @@ const Index = () => {
               </Button>
             </Link>
           </div>
-        </div>
+        </motion.div>
         {/* Torn Paper Effect */}
         <div
           className="absolute bottom-0 left-0 right-0 h-24 bg-background"
@@ -67,7 +73,13 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-muted">
+      <motion.section
+        className="py-24 bg-muted"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
@@ -79,8 +91,20 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-lg transition-shadow">
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ staggerChildren: 0.2 }}
+          >
+            <motion.div
+              className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-lg transition-shadow"
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
               <div className="w-16 h-16 bg-hero-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <BookOpen className="h-8 w-8 text-hero-accent" />
               </div>
@@ -91,9 +115,15 @@ const Index = () => {
                 Learn Jesus' disciple-making process through real-world
                 application.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-lg transition-shadow">
+            <motion.div
+              className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-lg transition-shadow"
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
               <div className="w-16 h-16 bg-hero-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Users className="h-8 w-8 text-hero-accent" />
               </div>
@@ -104,9 +134,15 @@ const Index = () => {
                 Connect with a global network of disciples committed to the
                 Great Commission.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-lg transition-shadow">
+            <motion.div
+              className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-lg transition-shadow"
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
               <div className="w-16 h-16 bg-hero-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Globe className="h-8 w-8 text-hero-accent" />
               </div>
@@ -117,9 +153,15 @@ const Index = () => {
                 Active in 71+ countries, reaching the unreached in hostile
                 environments.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-lg transition-shadow">
+            <motion.div
+              className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-lg transition-shadow"
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
               <div className="w-16 h-16 bg-hero-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Heart className="h-8 w-8 text-hero-accent" />
               </div>
@@ -130,43 +172,76 @@ const Index = () => {
                 Experience spiritual awakening that has the potential to shake
                 nations.
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Stats Section */}
-      <section className="py-24 bg-hero">
+      <motion.section
+        className="py-24 bg-hero"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 1 }}
+      >
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-12 text-center">
-            <div>
+          <motion.div
+            className="grid md:grid-cols-3 gap-12 text-center"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ staggerChildren: 0.3 }}
+          >
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
               <p className="text-5xl md:text-6xl font-bold text-hero-accent mb-2">
                 71+
               </p>
               <p className="text-hero-foreground/80 text-lg">
                 Countries Reached
               </p>
-            </div>
-            <div>
+            </motion.div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
               <p className="text-5xl md:text-6xl font-bold text-hero-accent mb-2">
                 3,000+
               </p>
               <p className="text-hero-foreground/80 text-lg">People Rescued</p>
-            </div>
-            <div>
+            </motion.div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
               <p className="text-5xl md:text-6xl font-bold text-hero-accent mb-2">
                 829
               </p>
               <p className="text-hero-foreground/80 text-lg">
                 Churches Planted
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-muted">
+      <motion.section
+        className="py-24 bg-muted"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
             Ready to Begin Your Journey?
@@ -182,7 +257,7 @@ const Index = () => {
             </Button>
           </Link>
         </div>
-      </section>
+      </motion.section>
 
       <Footer />
     </div>

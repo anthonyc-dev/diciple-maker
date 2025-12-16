@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { motion, Variants } from "framer-motion";
 
 const About = () => {
   const timeline = [
@@ -91,32 +92,66 @@ const About = () => {
     },
   ];
 
+  const sectionVariants: Variants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-hero">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-hero-foreground/70 text-sm tracking-widest uppercase mb-4">
-            There is a global movement of disciples of Christ rising in the
-            earth
-          </p>
-          <h1 className="text-4xl md:text-6xl font-bold text-hero-foreground mb-6">
+        <motion.div
+          className="container mx-auto px-6 text-center"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <motion.p
+            className="text-hero-foreground/70 text-sm tracking-widest uppercase mb-4"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+          >
+            There is a Group movement of disciples of Christ rising in the earth
+          </motion.p>
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold text-hero-foreground mb-6"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+          >
             About <span className="text-hero-accent">DISCIPLE</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-hero-foreground/80 max-w-3xl mx-auto">
+          </motion.h1>
+          <motion.p
+            className="text-xl md:text-2xl text-hero-foreground/80 max-w-3xl mx-auto"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+          >
             We don't just tell stories of the underground church,
             <br />
             <span className="text-hero-accent font-semibold">
               we are the underground church
             </span>
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </section>
 
       {/* Roots Section */}
-      <section className="py-20 bg-muted">
+      <motion.section
+        className="py-20 bg-muted"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <div className="container mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
             Roots of the Movement
@@ -152,17 +187,119 @@ const About = () => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
+
+      {/* The Visionaries Behind the Movement Section */}
+      {/* <motion.section
+        className="py-20 bg-muted"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        <div className="container mx-auto px-6 max-w-4xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12 text-center">
+            The Visionaries Behind the Movement
+          </h2>
+
+          <motion.div
+            className="flex flex-col lg:flex-row items-center bg-card rounded-lg shadow-lg border border-border p-8 mb-16"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="lg:w-1/3 flex justify-center mb-8 lg:mb-0 lg:pr-8">
+              <motion.img
+                src="/JESUS.jpg"
+                alt="Joshua"
+                className="w-56 h-56 rounded-full object-cover border-4 border-hero-accent shadow-md"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              />
+            </div>
+            <div className="lg:w-2/3 text-center lg:text-left">
+              <h3 className="text-3xl font-bold text-foreground mb-2">
+                Joshua
+              </h3>
+              <p className="text-hero-accent font-semibold text-xl mb-4">
+                Founder & Lead Disciple-Maker
+              </p>
+              <p className="text-muted-foreground leading-relaxed text-base">
+                Joshua's journey began with a profound calling to reach the
+                unreached. With unwavering faith and relentless dedication, he
+                established this movement to ignite a passion for discipleship
+                across the globe. His vision is to see every nation transformed
+                by the power of Christ, fostering communities of believers who
+                fearlessly spread the Gospel. He is a beacon of hope, inspiring
+                countless individuals to embrace their faith and become active
+                participants in the great commission.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="flex flex-col lg:flex-row-reverse items-center bg-card rounded-lg shadow-lg border border-border p-8"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+          >
+            <div className="lg:w-1/3 flex justify-center mb-8 lg:mb-0 lg:pl-8">
+              <motion.img
+                src="/JESUS.jpg"
+                alt="Sarah"
+                className="w-56 h-56 rounded-full object-cover border-4 border-hero-accent shadow-md"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              />
+            </div>
+            <div className="lg:w-2/3 text-center lg:text-right">
+              <h3 className="text-3xl font-bold text-foreground mb-2">Sarah</h3>
+              <p className="text-hero-accent font-semibold text-xl mb-4">
+                Co-Founder & Strategic Director
+              </p>
+              <p className="text-muted-foreground leading-relaxed text-base">
+                Sarah brings a strategic mind and compassionate heart to the
+                movement. Working alongside Joshua, she has been instrumental in
+                developing innovative approaches to disciple-making,
+                particularly in challenging environments. Her commitment to
+                empowering local leaders and building sustainable ministries has
+                been pivotal in expanding the movement's reach and impact
+                worldwide. Her leadership ensures the movement's longevity and
+                effectiveness in its global mission.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section> */}
 
       {/* Timeline Section */}
-      <section className="py-20 bg-background">
+      {/* <motion.section
+        className="py-20 bg-background"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <div className="container mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12 text-center">
             How We Started
           </h2>
           <div className="max-w-4xl mx-auto">
             {timeline.map((item, index) => (
-              <div key={index} className="flex gap-6 mb-8">
+              <motion.div
+                key={index}
+                className="flex gap-6 mb-8"
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
                 <div className="flex-shrink-0 w-24">
                   <span className="text-hero-accent font-bold text-sm">
                     {item.year}
@@ -175,15 +312,21 @@ const About = () => {
                   </h3>
                   <p className="text-muted-foreground">{item.description}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section> */}
 
       {/* Mission Statement */}
-      <section className="py-20 bg-hero">
-        <div className="container mx-auto px-6">
+      {/* <section className="py-20 bg-hero">
+        <motion.div
+          className="container mx-auto px-6"
+          variants={sectionVariants}
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-hero-foreground mb-8 text-center">
             Fueling the Pursuit of Disciple-Making
           </h2>
@@ -196,20 +339,36 @@ const About = () => {
             relationships with the lost, and guiding them to salvation in
             Christ.
           </p>
-        </div>
-      </section>
+        </motion.div>
+      </section> */}
 
       {/* Statements of Faith */}
-      <section className="py-20 bg-muted">
+      <motion.section
+        className="py-20 bg-muted"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <div className="container mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12 text-center">
             Statements of Faith
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ staggerChildren: 0.1 }}
+          >
             {statements.map((statement, index) => (
-              <div
+              <motion.div
                 key={index}
                 className="bg-card p-6 rounded-lg border border-border"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
               >
                 <p className="font-bold text-hero-accent mb-2 text-sm">
                   {statement.bold}
@@ -217,14 +376,20 @@ const About = () => {
                 <p className="text-muted-foreground text-sm">
                   {statement.text}
                 </p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Beliefs */}
-      <section className="py-20 bg-background">
+      <motion.section
+        className="py-20 bg-background"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <div className="container mx-auto px-6 max-w-4xl">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12 text-center">
             Our Beliefs
@@ -270,7 +435,7 @@ const About = () => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <Footer />
     </div>

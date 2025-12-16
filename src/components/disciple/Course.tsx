@@ -6,6 +6,7 @@ import {
   MessageCircle,
   Compass,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const courseModules = [
   {
@@ -47,7 +48,14 @@ const courseModules = [
 
 const Course = () => {
   return (
-    <section id="course" className="py-24 bg-secondary">
+    <motion.section
+      id="course"
+      className="py-24 bg-secondary"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <p className="text-primary tracking-[0.3em] text-sm font-medium mb-4">
@@ -63,11 +71,22 @@ const Course = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ staggerChildren: 0.1 }}
+        >
           {courseModules.map((module, index) => (
-            <div
+            <motion.div
               key={index}
               className="bg-card p-8 rounded-lg border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg group"
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             >
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                 <module.icon className="w-6 h-6 text-primary" />
@@ -78,11 +97,11 @@ const Course = () => {
               <p className="text-muted-foreground leading-relaxed">
                 {module.description}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

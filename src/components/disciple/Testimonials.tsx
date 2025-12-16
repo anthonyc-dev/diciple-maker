@@ -1,4 +1,5 @@
 import { Quote } from "lucide-react";
+import { motion } from "framer-motion";
 
 const testimonials = [
   {
@@ -26,7 +27,14 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section id="testimonials" className="py-24 bg-background">
+    <motion.section
+      id="testimonials"
+      className="py-24 bg-background"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <p className="text-primary tracking-[0.3em] text-sm font-medium mb-4">
@@ -40,11 +48,22 @@ const Testimonials = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <motion.div
+          className="grid md:grid-cols-3 gap-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ staggerChildren: 0.2 }}
+        >
           {testimonials.map((testimonial, index) => (
-            <div
+            <motion.div
               key={index}
               className="bg-card p-8 rounded-lg border border-border relative"
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             >
               <Quote className="absolute top-6 right-6 w-10 h-10 text-primary/20" />
               <p className="text-muted-foreground leading-relaxed mb-6 relative z-10">
@@ -59,11 +78,11 @@ const Testimonials = () => {
                 </p>
                 <p className="text-primary text-sm">{testimonial.location}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

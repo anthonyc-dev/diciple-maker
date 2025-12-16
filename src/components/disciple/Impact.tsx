@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 const regions = [
   { name: "Middle East", percentage: 85, countries: "20+ countries" },
   { name: "Africa", percentage: 72, countries: "15+ countries" },
@@ -11,7 +13,12 @@ const Impact = () => {
     <section id="impact" className="py-24 bg-hero">
       <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
             <p className="text-hero-accent tracking-[0.3em] text-sm font-medium mb-4">
               GLOBAL IMPACT
             </p>
@@ -48,11 +55,24 @@ const Impact = () => {
                 <p className="text-hero-foreground/60 text-sm mt-2">Churches</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-6">
+          <motion.div
+            className="space-y-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ staggerChildren: 0.2 }}
+          >
             {regions.map((region, index) => (
-              <div key={index}>
+              <motion.div
+                key={index}
+                variants={{
+                  hidden: { opacity: 0, x: 50 },
+                  visible: { opacity: 1, x: 0 },
+                }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              >
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-hero-foreground font-medium">
                     {region.name}
@@ -62,14 +82,17 @@ const Impact = () => {
                   </span>
                 </div>
                 <div className="h-2 bg-hero-foreground/10 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-hero-accent rounded-full transition-all duration-1000"
-                    style={{ width: `${region.percentage}%` }}
+                  <motion.div
+                    className="h-full bg-hero-accent rounded-full"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${region.percentage}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
                   />
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

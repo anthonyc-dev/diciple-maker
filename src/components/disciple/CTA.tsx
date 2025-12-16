@@ -1,9 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const CTA = () => {
   return (
-    <section className="py-24 bg-secondary">
+    <motion.section
+      className="py-24 bg-secondary"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.5 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-primary tracking-[0.3em] text-sm font-medium mb-4">
@@ -19,13 +27,16 @@ const CTA = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-base px-10 group"
-            >
-              Join Us
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
+            <Link to={"/join"}>
+              <Button
+                size="lg"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-base px-10 group"
+              >
+                Join Us
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+
             <Button
               size="lg"
               variant="outline"
@@ -40,7 +51,7 @@ const CTA = () => {
           </p>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
