@@ -85,17 +85,27 @@ const HomeAdmin = () => {
     <div className="flex flex-col h-full p-6">
       <Card className="flex-1 shadow-lg border border-gray-200 dark:border-gray-700">
         <CardHeader className="bg-gray-50 dark:bg-gray-800 rounded-t-lg">
-          <CardTitle className="text-3xl text-gray-900 dark:text-gray-100">Disciples</CardTitle>
+          <CardTitle className="text-3xl text-gray-900 dark:text-gray-100">
+            Disciples
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-gray-100 dark:bg-gray-700">
                 <TableRow>
-                  <TableHead className="text-gray-700 dark:text-gray-300">Name</TableHead>
-                  <TableHead className="text-gray-700 dark:text-gray-300">Last Name</TableHead>
-                  <TableHead className="text-gray-700 dark:text-gray-300">Number</TableHead>
-                  <TableHead className="text-gray-700 dark:text-gray-300">Email</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">
+                    Name
+                  </TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">
+                    Last Name
+                  </TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">
+                    Number
+                  </TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">
+                    Email
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -113,7 +123,10 @@ const HomeAdmin = () => {
                   </TableRow>
                 ) : (
                   users.map((user) => (
-                    <TableRow key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <TableRow
+                      key={user.id}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
                       <TableCell className="font-medium">{user.name}</TableCell>
                       <TableCell>{user.lastname}</TableCell>
                       <TableCell>{user.number}</TableCell>

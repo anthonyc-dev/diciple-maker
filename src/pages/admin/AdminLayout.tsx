@@ -32,7 +32,10 @@ const AdminLayout = () => {
             Disciples
           </Button>
         </Link>
-        <Link to="/admin/schedule-training" onClick={() => setIsMobileSidebarOpen(false)}>
+        <Link
+          to="/admin/schedule-training"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        >
           <Button
             variant="ghost"
             className="justify-start text-lg px-4 py-3 w-full text-blue-100 hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
@@ -84,7 +87,9 @@ const AdminLayout = () => {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden lg:flex flex-1 h-screen"> {/* Ensure full height on desktop */}
+      <div className="hidden lg:flex flex-1 h-screen">
+        {" "}
+        {/* Ensure full height on desktop */}
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20} minSize={15} maxSize={25}>
             <SidebarContent />
@@ -99,7 +104,9 @@ const AdminLayout = () => {
       </div>
 
       {/* Content Area for Mobile - only Outlet */}
-      <div className="lg:hidden flex-1 flex flex-col pt-16"> {/* Adjust padding for mobile header */}
+      <div className="lg:hidden flex-1 flex flex-col pt-16">
+        {" "}
+        {/* Adjust padding for mobile header */}
         <div className="h-full overflow-y-auto">
           <Outlet />
         </div>
