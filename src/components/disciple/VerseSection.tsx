@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
-import VerseBg from "@/assets/12.jpg";
 
 const VerseSection = () => {
   return (
     <section
       className="py-32 bg-cover bg-center bg-fixed relative"
-      style={{ backgroundImage: `url(${VerseBg})` }}
+      style={{ backgroundImage: `url(/1.png)` }}
     >
       <div className="absolute inset-0 bg-black/60" />
       <div className="container mx-auto px-6 text-center relative">
