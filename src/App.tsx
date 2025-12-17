@@ -11,6 +11,9 @@ import LoginForm from "./pages/Login";
 import Auth from "./pages/Auth";
 import HomeAdmin from "./pages/admin/Home";
 import SignUp from "./pages/sign-up";
+import AdminLayout from "./pages/admin/AdminLayout";
+import ScheduleTraining from "./pages/admin/ScheduleTraining";
+import Events from "./pages/admin/Events";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +28,12 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/join" element={<Join />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/admin" element={<HomeAdmin />} />
+          
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<HomeAdmin />} /> {/* Default child route for /admin */}
+            <Route path="schedule-training" element={<ScheduleTraining />} />
+            <Route path="events" element={<Events />} />
+          </Route>
 
           {/* log in route */}
           <Route path="/auth" element={<Auth />} />

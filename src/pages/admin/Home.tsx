@@ -1,11 +1,10 @@
 import React from "react";
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -14,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Users, Calendar, BarChart2 } from "lucide-react";
 
 // Dummy data for users
 const users = [
@@ -57,71 +55,34 @@ const users = [
 
 const HomeAdmin = () => {
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-950">
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel defaultSize={20} minSize={15} maxSize={25}>
-          <div className="flex h-full flex-col p-4 bg-white dark:bg-gray-800 shadow-md">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-              Admin Panel
-            </h2>
-            <nav className="flex flex-col gap-2">
-              <Button
-                variant="ghost"
-                className="justify-start text-lg px-4 py-3 w-full"
-              >
-                <Users className="mr-3 h-5 w-5" />
-                Users
-              </Button>
-              <Button
-                variant="ghost"
-                className="justify-start text-lg px-4 py-3 w-full"
-              >
-                <Calendar className="mr-3 h-5 w-5" />
-                Schedule Training
-              </Button>
-              <Button
-                variant="ghost"
-                className="justify-start text-lg px-4 py-3 w-full"
-              >
-                <BarChart2 className="mr-3 h-5 w-5" />
-                Events
-              </Button>
-            </nav>
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={80}>
-          <div className="flex flex-col h-full p-6">
-            <Card className="flex-1">
-              <CardHeader>
-                <CardTitle className="text-3xl">Users</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Last Name</TableHead>
-                      <TableHead>Number</TableHead>
-                      <TableHead>Email</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell className="font-medium">{user.name}</TableCell>
-                        <TableCell>{user.lastName}</TableCell>
-                        <TableCell>{user.number}</TableCell>
-                        <TableCell>{user.email}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+    <div className="flex flex-col h-full p-6">
+      <Card className="flex-1">
+        <CardHeader>
+          <CardTitle className="text-3xl">Users</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Last Name</TableHead>
+                <TableHead>Number</TableHead>
+                <TableHead>Email</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">{user.name}</TableCell>
+                  <TableCell>{user.lastName}</TableCell>
+                  <TableCell>{user.number}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 };
