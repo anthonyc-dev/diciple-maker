@@ -1,21 +1,27 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { Users, Calendar, BarChart2 } from "lucide-react";
+import { Users, Calendar, BarChart2, LogOut } from "lucide-react";
 
 const AdminLayout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    navigate("/auth");
+  };
+
   return (
     <div className="flex h-screen bg-blue-50 dark:bg-gray-900">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={20} minSize={15} maxSize={25}>
           <div className="flex h-full flex-col p-4 bg-hero text-white shadow-xl">
             <h2 className="text-2xl font-bold mb-6 text-white">Admin Panel</h2>
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-2 flex-1">
               <Link to="/admin">
                 <Button
                   variant="ghost"
@@ -44,6 +50,16 @@ const AdminLayout = () => {
                 </Button>
               </Link>
             </nav>
+            <div className="mt-8">
+              <Button
+                variant="ghost"
+                className="justify-start text-lg px-4 py-3 w-full text-blue-100 hover:text-white  dark:hover:bg-gray-800 transition-colors duration-200"
+                onClick={handleLogout}
+              >
+                <LogOut className="mr-3 h-5 w-5 text-blue-200" />
+                Logout
+              </Button>
+            </div>
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
