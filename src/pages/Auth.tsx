@@ -38,7 +38,7 @@ export default function Auth() {
         setMessage("Logged in successfully! (dummy)");
         // Direct to /home after login
         setTimeout(() => {
-          navigate("/home");
+          navigate("/admin");
         }, 700);
       } else {
         setMessage(
