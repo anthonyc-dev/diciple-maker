@@ -1,43 +1,51 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { motion, Variants } from "framer-motion";
+import Location from "@/components/about/Location";
 
 const About = () => {
-  const timeline = [
+  const howToDisciple = [
     {
-      year: "May 2014",
-      title: "Disciple Launches",
+      title: "Pray for Guidance",
+      step: "Step 1",
       description:
-        "Starting under extreme religious persecution, God's movement grew into Afghanistan.",
+        "Begin with seeking God’s direction. Pray for your own heart, the person you’ll reach out to, and for opportunities to share the gospel.",
     },
     {
-      year: "Dec 2019",
-      title: "Sheep Among Wolves 2",
+      title: "Build Relationships",
+      step: "Step 2",
       description:
-        "Studio produced film highlighting GCM's team in volatile regions of the world.",
+        "Form genuine connections. Show unconditional love and interest in people’s lives. True discipleship flows out of authentic relationships.",
     },
     {
-      year: "Jan 2021",
-      title: "Going Worldwide",
-      description: "Coaching made available worldwide, from East to the West.",
+      title: "Share Your Story",
+      step: "Step 3",
+      description:
+        "Be ready to share how Jesus changed your life. Your testimony can open doors to spiritual conversations without pressure or arguments.",
     },
     {
-      year: "Aug 2021",
-      title: "Afghanistan Rescue Operations",
+      title: "Explain the Good News",
+      step: "Step 4",
       description:
-        "GCM helps rescue over 3,000 people, while evading Taliban detection.",
+        "Share the simple gospel: God loves us, sin separates us, Jesus died and rose to save us, and everyone can receive forgiveness through faith in Him.",
     },
     {
-      year: "Dec 2023",
-      title: "Providing Safety",
+      title: "Read the Bible Together",
+      step: "Step 5",
       description:
-        "Officially moved our last safe house family out of harm's way in Afghanistan.",
+        "Open scripture and discover what it says together. Let God’s Word speak. Ask questions, listen, and encourage personal discovery.",
     },
     {
-      year: "Feb 2024",
-      title: "Moments to Movements",
+      title: "Model and Invite Obedience",
+      step: "Step 6",
       description:
-        "A fresh message to build intimate moments with God that catalyze global disciple-making movements. Now in 71 countries and growing.",
+        "Show what it looks like to follow Jesus in daily life. Walk beside the person as they obey God’s teaching and grow spiritually.",
+    },
+    {
+      title: "Empower Them to Multiply",
+      step: "Step 7",
+      description:
+        "Encourage and equip them to share their own faith and disciple others. The goal is not to make converts, but disciple-makers!",
     },
   ];
 
@@ -279,7 +287,7 @@ const About = () => {
       </motion.section> */}
 
       {/* Timeline Section */}
-      {/* <motion.section
+      <motion.section
         className="py-20 bg-background"
         variants={sectionVariants}
         initial="hidden"
@@ -288,10 +296,10 @@ const About = () => {
       >
         <div className="container mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12 text-center">
-            How We Started
+            How To Disciple
           </h2>
           <div className="max-w-4xl mx-auto">
-            {timeline.map((item, index) => (
+            {howToDisciple.map((item, index) => (
               <motion.div
                 key={index}
                 className="flex gap-6 mb-8"
@@ -302,7 +310,7 @@ const About = () => {
               >
                 <div className="flex-shrink-0 w-24">
                   <span className="text-hero-accent font-bold text-sm">
-                    {item.year}
+                    {item.step}
                   </span>
                 </div>
                 <div className="flex-1 pb-8 border-l-2 border-hero-accent/30 pl-6 relative">
@@ -316,7 +324,7 @@ const About = () => {
             ))}
           </div>
         </div>
-      </motion.section> */}
+      </motion.section>
 
       {/* Mission Statement */}
       {/* <section className="py-20 bg-hero">
@@ -437,6 +445,7 @@ const About = () => {
         </div>
       </motion.section>
 
+      <Location />
       <Footer />
     </div>
   );
