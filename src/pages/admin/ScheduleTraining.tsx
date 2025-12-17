@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calendar as CalendarIcon, MapPin, User2, Clock, Plus } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, User2, Clock, Plus, Edit, Trash2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
@@ -181,7 +181,6 @@ const ScheduleTraining = () => {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" onClick={() => {
-              // Ensure newTraining state is fresh for the selected date
               setNewTraining((prev) => ({ ...prev, date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "" }));
             }}>
               <Plus className="mr-2 h-4 w-4" /> Add Training
@@ -413,9 +412,9 @@ const ScheduleTraining = () => {
             <CardContent className="grid gap-4">
               {selectedDayTrainings.map((session, index) => (
                 <React.Fragment key={session.id}>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-semibold text-lg">{session.title}</h4>
+                  <Card className="border-l-4 border-blue-500 p-4 shadow-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-bold text-xl text-foreground">{session.title}</h4>
                       <Badge
                         variant={
                           session.status === "upcoming"
@@ -428,18 +427,20 @@ const ScheduleTraining = () => {
                         {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{session.description}</p>
-                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <Clock className="mr-2 h-4 w-4" /> {session.time}
+                    <p className="text-sm text-muted-foreground mb-3">{session.description}</p>
+                    <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 dark:text-gray-300">
+                      <div className="flex items-center">
+                        <Clock className="mr-2 h-4 w-4 text-blue-400" /> {session.time}
+                      </div>
+                      <div className="flex items-center">
+                        <User2 className="mr-2 h-4 w-4 text-blue-400" /> {session.trainer}
+                      </div>
+                      <div className="flex items-center">
+                        <MapPin className="mr-2 h-4 w-4 text-blue-400" /> {session.location}
+                      </div>
                     </div>
-                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <MapPin className="mr-2 h-4 w-4" /> {session.location}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <User2 className="mr-2 h-4 w-4" /> {session.trainer}
-                    </div>
-                  </div>
-                  {index < selectedDayTrainings.length - 1 && <Separator />}
+                  </Card>
+                  {index < selectedDayTrainings.length - 1 && <Separator className="my-4" />}
                 </React.Fragment>
               ))}
             </CardContent>
