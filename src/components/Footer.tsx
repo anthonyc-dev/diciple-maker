@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, Mail, MapPin, Phone } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Footer = () => {
@@ -19,9 +19,14 @@ const Footer = () => {
               visible: { opacity: 1, y: 0 },
             }}
           >
-            <h3 className="text-hero-foreground font-bold text-2xl mb-4">
-              <span className="text-hero-accent">D</span>ISCIPLING
-            </h3>
+            <div className=" mb-4">
+              <img
+                src="/discipling logo.png"
+                alt="Discipling Logo"
+                className="h-8 w-auto inline-block align-middle"
+                style={{ verticalAlign: "middle" }}
+              />
+            </div>
             <p className="text-hero-foreground/60 leading-relaxed max-w-md">
               A practical course in becoming a disciple who makes disciples.
               Transforming lives and creating movements across the globe.
@@ -68,16 +73,18 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-hero-foreground/60 text-sm">
-                <Mail className="w-4 h-4 text-hero-accent" />
-                info@discipling.org
+                <Facebook className="w-4 h-4 text-hero-accent" />
+                <a href=" https://www.facebook.com/MicroFluxOfficialPage">
+                  FaceBook
+                </a>
               </li>
               <li className="flex items-center gap-3 text-hero-foreground/60 text-sm">
                 <Phone className="w-4 h-4 text-hero-accent" />
-                +1 (555) 123-4567
+                +63 910 073 4410
               </li>
               <li className="flex items-start gap-3 text-hero-foreground/60 text-sm">
                 <MapPin className="w-4 h-4 text-hero-accent mt-0.5" />
-                Global Ministry Network
+                NCMC
               </li>
             </ul>
           </motion.div>

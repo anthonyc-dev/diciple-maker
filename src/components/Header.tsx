@@ -36,7 +36,12 @@ const Header = () => {
             className="text-hero-foreground font-bold text-xl tracking-wider"
             onClick={scrollToTop}
           >
-            <span className="text-hero-accent">D</span>ISCIPLING
+            <img
+              src="/discipling logo.png"
+              alt="Discipling Logo"
+              className="h-8 w-auto inline-block align-middle"
+              style={{ verticalAlign: "middle" }}
+            />
           </NavLink>
 
           {/* Desktop Navigation */}
