@@ -1,8 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calendar, MapPin, User2, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, User2, Clock, Plus } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { v4 as uuidv4 } from 'uuid';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 interface TrainingSession {
   id: string;
@@ -15,7 +35,7 @@ interface TrainingSession {
   status: "upcoming" | "active" | "completed" | "cancelled";
 }
 
-const dummyTrainingSessions: TrainingSession[] = [
+const initialTrainingSessions: TrainingSession[] = [
   {
     id: "ts1",
     title: "Foundations of Discipleship",
@@ -59,8 +79,190 @@ const dummyTrainingSessions: TrainingSession[] = [
 ];
 
 const ScheduleTraining = () => {
+  const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>(initialTrainingSessions);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newTraining, setNewTraining] = useState<Omit<TrainingSession, 'id' | 'date'>>({
+    title: "",
+    time: "",
+    description: "",
+    location: "",
+    trainer: "",
+    status: "upcoming",
+  });
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+    if (date) {
+      setNewTraining((prev) => ({ ...prev, date: format(date, "yyyy-MM-dd") }));
+      setIsDialogOpen(true);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setNewTraining((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSelectChange = (value: string, id: string) => {
+    setNewTraining((prev) => ({ ...prev, [id]: value as TrainingSession['status'] }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedDate || !newTraining.title || !newTraining.time || !newTraining.description || !newTraining.location || !newTraining.trainer) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    const newSession: TrainingSession = {
+      ...newTraining,
+      id: uuidv4(),
+      date: format(selectedDate, "yyyy-MM-dd"),
+    };
+
+    setTrainingSessions((prev) => [...prev, newSession].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
+    setNewTraining({
+      title: "",
+      time: "",
+      description: "",
+      location: "",
+      trainer: "",
+      status: "upcoming",
+    });
+    setSelectedDate(undefined);
+    setIsDialogOpen(false);
+  };
+
+  const upcomingSessions = trainingSessions.filter(session => new Date(session.date) >= new Date()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const pastSessions = trainingSessions.filter(session => new Date(session.date) < new Date()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+
   return (
-    <div className="flex flex-col h-full p-6 bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col h-full p-6 bg-gray-50 dark:bg-gray-900 overflow-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Training Calendar</CardTitle>
+            <CardDescription>Select a date to schedule a new training session.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={handleDateSelect}
+              className="rounded-md border"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-2xl">Add New Training</CardTitle>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" onClick={() => { setSelectedDate(undefined); setNewTraining((prev) => ({ ...prev, date: "" })); }}>
+                  <Plus className="mr-2 h-4 w-4" /> Add Manually
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Add Training Session</DialogTitle>
+                  <DialogDescription>
+                    Fill in the details for the new training session.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit}>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="title" className="text-right">
+                        Title
+                      </Label>
+                      <Input id="title" value={newTraining.title} onChange={handleInputChange} className="col-span-3" required />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="description" className="text-right">
+                        Description
+                      </Label>
+                      <Textarea id="description" value={newTraining.description} onChange={handleInputChange} className="col-span-3" required />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="date" className="text-right">
+                        Date
+                      </Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal col-span-3",
+                              !selectedDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={setSelectedDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="time" className="text-right">
+                        Time
+                      </Label>
+                      <Input id="time" value={newTraining.time} onChange={handleInputChange} className="col-span-3" placeholder="e.g., 10:00 AM - 12:00 PM" required />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="location" className="text-right">
+                        Location
+                      </Label>
+                      <Input id="location" value={newTraining.location} onChange={handleInputChange} className="col-span-3" required />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="trainer" className="text-right">
+                        Trainer
+                      </Label>
+                      <Input id="trainer" value={newTraining.trainer} onChange={handleInputChange} className="col-span-3" required />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="status" className="text-right">
+                        Status
+                      </Label>
+                      <Select value={newTraining.status} onValueChange={(value) => handleSelectChange(value, 'status')}>
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="upcoming">Upcoming</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit">Save Training</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Click "Add Manually" to open the form, or select a date on the calendar to pre-fill the date field.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card className="flex-1">
         <CardHeader>
           <CardTitle className="text-3xl">Upcoming Training Sessions</CardTitle>
@@ -69,46 +271,96 @@ const ScheduleTraining = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {dummyTrainingSessions.map((session, index) => (
-            <React.Fragment key={session.id}>
-              <Card className="shadow-sm hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-xl font-semibold">
-                    {session.title}
-                  </CardTitle>
-                  <Badge
-                    variant={
-                      session.status === "upcoming"
-                        ? "default"
-                        : session.status === "active"
-                        ? "secondary"
-                        : "outline"
-                    }
-                  >
-                    {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
-                  </Badge>
-                </CardHeader>
-                <CardContent className="grid gap-2">
-                  <p className="text-muted-foreground text-sm">{session.description}</p>
-                  <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                    <Calendar className="mr-2 h-4 w-4" /> {session.date}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                    <Clock className="mr-2 h-4 w-4" /> {session.time}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                    <MapPin className="mr-2 h-4 w-4" /> {session.location}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                    <User2 className="mr-2 h-4 w-4" /> {session.trainer}
-                  </div>
-                </CardContent>
-              </Card>
-              {index < dummyTrainingSessions.length - 1 && <Separator />}
-            </React.Fragment>
-          ))}
+          {upcomingSessions.length > 0 ? (
+            upcomingSessions.map((session, index) => (
+              <React.Fragment key={session.id}>
+                <Card className="shadow-sm hover:shadow-md transition-shadow">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-xl font-semibold">
+                      {session.title}
+                    </CardTitle>
+                    <Badge
+                      variant={
+                        session.status === "upcoming"
+                          ? "default"
+                          : session.status === "active"
+                          ? "secondary"
+                          : "outline"
+                      }
+                    >
+                      {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                    </Badge>
+                  </CardHeader>
+                  <CardContent className="grid gap-2">
+                    <p className="text-muted-foreground text-sm">{session.description}</p>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <CalendarIcon className="mr-2 h-4 w-4" /> {session.date}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <Clock className="mr-2 h-4 w-4" /> {session.time}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <MapPin className="mr-2 h-4 w-4" /> {session.location}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <User2 className="mr-2 h-4 w-4" /> {session.trainer}
+                    </div>
+                  </CardContent>
+                </Card>
+                {index < upcomingSessions.length - 1 && <Separator />}
+              </React.Fragment>
+            ))
+          ) : (
+            <p className="text-muted-foreground">No upcoming training sessions. Add one using the calendar or the "Add Manually" button!</p>
+          )}
         </CardContent>
       </Card>
+
+      {pastSessions.length > 0 && (
+        <Card className="mt-6 flex-1">
+          <CardHeader>
+            <CardTitle className="text-3xl">Past Training Sessions</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-6">
+            {pastSessions.map((session, index) => (
+              <React.Fragment key={session.id}>
+                <Card className="shadow-sm hover:shadow-md transition-shadow opacity-70">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-xl font-semibold">
+                      {session.title}
+                    </CardTitle>
+                    <Badge
+                      variant={
+                        session.status === "completed"
+                          ? "default"
+                          : "secondary"
+                      }
+                    >
+                      {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                    </Badge>
+                  </CardHeader>
+                  <CardContent className="grid gap-2">
+                    <p className="text-muted-foreground text-sm">{session.description}</p>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <CalendarIcon className="mr-2 h-4 w-4" /> {session.date}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <Clock className="mr-2 h-4 w-4" /> {session.time}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <MapPin className="mr-2 h-4 w-4" /> {session.location}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <User2 className="mr-2 h-4 w-4" /> {session.trainer}
+                    </div>
+                  </CardContent>
+                </Card>
+                {index < pastSessions.length - 1 && <Separator />}
+              </React.Fragment>
+            ))}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
