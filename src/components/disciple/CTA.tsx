@@ -37,18 +37,18 @@ const CTA = () => {
               </Button>
             </Link>
 
-            <Button
+            {/* <Button
               size="lg"
               variant="outline"
-              className="border-foreground/20 text-foreground hover:bg-foreground/5 font-semibold text-base px-10"
+              className="border-foreground/20 text-foreground hover:bg-foreground/5 font-semibold text-base px-10 group"
             >
               Contact Us
-            </Button>
+            </Button> */}
           </div>
 
-          <p className="mt-8 text-muted-foreground text-sm">
+          {/* <p className="mt-8 text-muted-foreground text-sm">
             Free introductory module available • No credit card required
-          </p>
+          </p> */}
         </div>
       </div>
     </motion.section>
