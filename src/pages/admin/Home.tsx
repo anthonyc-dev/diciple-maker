@@ -88,40 +88,42 @@ const HomeAdmin = () => {
           <CardTitle className="text-3xl text-gray-900 dark:text-gray-100">Disciples</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader className="bg-gray-100 dark:bg-gray-700">
-              <TableRow>
-                <TableHead className="text-gray-700 dark:text-gray-300">Name</TableHead>
-                <TableHead className="text-gray-700 dark:text-gray-300">Last Name</TableHead>
-                <TableHead className="text-gray-700 dark:text-gray-300">Number</TableHead>
-                <TableHead className="text-gray-700 dark:text-gray-300">Email</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-gray-100 dark:bg-gray-700">
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">
-                    Loading...
-                  </TableCell>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Name</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Last Name</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Number</TableHead>
+                  <TableHead className="text-gray-700 dark:text-gray-300">Email</TableHead>
                 </TableRow>
-              ) : users.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center">
-                    No users found.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                users.map((user) => (
-                  <TableRow key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    <TableCell className="font-medium">{user.name}</TableCell>
-                    <TableCell>{user.lastname}</TableCell>
-                    <TableCell>{user.number}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                      Loading...
+                    </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : users.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                      No users found.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  users.map((user) => (
+                    <TableRow key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <TableCell className="font-medium">{user.name}</TableCell>
+                      <TableCell>{user.lastname}</TableCell>
+                      <TableCell>{user.number}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
           <div className="flex items-center justify-between mt-6 space-x-2">
             <Button variant="outline" disabled={page === 1} onClick={goToPrev}>
               Previous

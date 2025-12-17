@@ -256,32 +256,32 @@ const ScheduleTraining = () => {
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="title" className="text-right">
+                <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                  <Label htmlFor="title" className="md:text-right text-left">
                     Title
                   </Label>
                   <Input
                     id="title"
                     value={newTraining.title}
                     onChange={handleInputChange}
-                    className="col-span-3"
+                    className="md:col-span-3 col-span-full"
                     required
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="text-right">
+                <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                  <Label htmlFor="description" className="md:text-right text-left">
                     Description
                   </Label>
                   <Textarea
                     id="description"
                     value={newTraining.description}
                     onChange={handleInputChange}
-                    className="col-span-3"
+                    className="md:col-span-3 col-span-full"
                     required
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="date" className="text-right">
+                <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                  <Label htmlFor="date" className="md:text-right text-left">
                     Date
                   </Label>
                   <Popover>
@@ -289,7 +289,7 @@ const ScheduleTraining = () => {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full justify-start text-left font-normal col-span-3",
+                          "w-full justify-start text-left font-normal md:col-span-3 col-span-full",
                           !newTraining.date && "text-muted-foreground"
                         )}
                       >
@@ -311,45 +311,45 @@ const ScheduleTraining = () => {
                     </PopoverContent>
                   </Popover>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="time" className="text-right">
+                <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                  <Label htmlFor="time" className="md:text-right text-left">
                     Time
                   </Label>
                   <Input
                     id="time"
                     value={newTraining.time}
                     onChange={handleInputChange}
-                    className="col-span-3"
+                    className="md:col-span-3 col-span-full"
                     placeholder="e.g., 10:00 AM - 12:00 PM"
                     required
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="location" className="text-right">
+                <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                  <Label htmlFor="location" className="md:text-right text-left">
                     Location
                   </Label>
                   <Input
                     id="location"
                     value={newTraining.location}
                     onChange={handleInputChange}
-                    className="col-span-3"
+                    className="md:col-span-3 col-span-full"
                     required
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="trainer" className="text-right">
+                <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                  <Label htmlFor="trainer" className="md:text-right text-left">
                     Trainer
                   </Label>
                   <Input
                     id="trainer"
                     value={newTraining.trainer}
                     onChange={handleInputChange}
-                    className="col-span-3"
+                    className="md:col-span-3 col-span-full"
                     required
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="status" className="text-right">
+                <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                  <Label htmlFor="status" className="md:text-right text-left">
                     Status
                   </Label>
                   <Select
@@ -358,7 +358,7 @@ const ScheduleTraining = () => {
                       handleSelectChange(value, "status")
                     }
                   >
-                    <SelectTrigger className="col-span-3">
+                    <SelectTrigger className="md:col-span-3 col-span-full">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
