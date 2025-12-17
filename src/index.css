@@ -120,3 +120,20 @@ body {
 *::-webkit-scrollbar-thumb:hover {
   background-color: #18181b; /* zinc-900 */
 }
+
+/* targets the day with "has-trainings" class */
+.has-trainings {
+  position: relative;
+}
+
+.has-trainings::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  top: 4px; /* adjust vertical position */
+  left: 50%;
+  transform: translateX(-50%);
+}
