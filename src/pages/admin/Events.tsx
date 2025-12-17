@@ -4,12 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const Events = () => {
   return (
     <div className="flex flex-col h-full p-6">
-      <Card className="flex-1">
-        <CardHeader>
-          <CardTitle className="text-3xl">Events</CardTitle>
+      <Card className="flex-1 shadow-lg border border-gray-200 dark:border-gray-700">
+        <CardHeader className="bg-gray-50 dark:bg-gray-800 rounded-t-lg">
+          <CardTitle className="text-3xl text-gray-900 dark:text-gray-100">Events</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Content for Events goes here.</p>
+          <p className="text-gray-700 dark:text-gray-300">Content for Events goes here.</p>
         </CardContent>
       </Card>
     </div>

@@ -15,6 +15,7 @@ import { supabase } from "../../supabaseClient";
 const USERS_PER_PAGE = 10;
 
 interface UserType {
+  id: number;
   name: string;
   lastname: string;
   number: string;
@@ -82,18 +83,18 @@ const HomeAdmin = () => {
 
   return (
     <div className="flex flex-col h-full p-6">
-      <Card className="flex-1">
-        <CardHeader>
-          <CardTitle className="text-3xl">Disciples</CardTitle>
+      <Card className="flex-1 shadow-lg border border-gray-200 dark:border-gray-700">
+        <CardHeader className="bg-gray-50 dark:bg-gray-800 rounded-t-lg">
+          <CardTitle className="text-3xl text-gray-900 dark:text-gray-100">Disciples</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
-            <TableHeader>
+            <TableHeader className="bg-gray-100 dark:bg-gray-700">
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Last Name</TableHead>
-                <TableHead>Number</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300">Name</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300">Last Name</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300">Number</TableHead>
+                <TableHead className="text-gray-700 dark:text-gray-300">Email</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -111,7 +112,7 @@ const HomeAdmin = () => {
                 </TableRow>
               ) : (
                 users.map((user) => (
-                  <TableRow key={user.id}>
+                  <TableRow key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <TableCell className="font-medium">{user.name}</TableCell>
                     <TableCell>{user.lastname}</TableCell>
                     <TableCell>{user.number}</TableCell>
@@ -125,7 +126,7 @@ const HomeAdmin = () => {
             <Button variant="outline" disabled={page === 1} onClick={goToPrev}>
               Previous
             </Button>
-            <span>
+            <span className="text-gray-700 dark:text-gray-300">
               Page {page} of {totalPages}
             </span>
             <Button
