@@ -1,73 +1,93 @@
-# Welcome to your Lovable project
+<p align="center">
+  <img src="public/discipling logo.png" alt="Discipling Logo" height="100" />
+</p>
 
-## Project info
+# Discipling Disciples
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This project is not open source.  
+This is a resource about God, following Jesus, and making disciples who make disciples.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## About
 
-**Use Lovable**
+**Discipling Disciples** is a web-based course and platform focused on:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Helping you grow as a follower of Jesus
+- Teaching biblical and practical disciple-making
+- Supplying resources to strengthen your discipleship walk
+- Inspiring a movement of multiplying disciples
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- ✝️ Christ-centered guidance and training
+- 📚 Step-by-step discipleship lessons
+- 🌍 Connect with the body of Christ
+- 📖 Strong scriptural foundations
+- 💬 Resources to share and equip others
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## Preview
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Experience the website at [http://localhost:5173](http://localhost:5173) (or your deployed version).
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Usage
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+To use or preview this resource locally you will need:
 
-**Edit a file directly in GitHub**
+- [Node.js](https://nodejs.org/) (v16+ recommended)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Clone this repository:
 
-**Use GitHub Codespaces**
+   ```bash
+   git clone https://github.com/your-username/discipling-disciples.git
+   cd discipling-disciples
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+2. Install dependencies:
 
-## What technologies are used for this project?
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-This project is built with:
+3. Start the development server:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-## How can I deploy this project?
+4. Visit [http://localhost:5173](http://localhost:5173) in your browser.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## Structure
 
-Yes, you can!
+- `src/components/` — React UI components
+- `src/assets/` — Images and media
+- `src/pages/` — Main site pages
+- `src/App.tsx` — App entry point
+- `public/discipling logo.png` — Project logo image
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Notice
+
+This resource is not open source and is intended only to share materials and help people grow as disciples of Jesus Christ.
+
+---
+
+© 2024 Discipling Disciples. All rights reserved.
+
+---
+
+_This is all about following Jesus, growing as His disciple, and helping others do the same._
