@@ -24,7 +24,7 @@ const AdminLayout = () => {
                   className="justify-start text-lg px-4 py-3 w-full"
                 >
                   <Users className="mr-3 h-5 w-5" />
-                  Users
+                  Disciples
                 </Button>
               </Link>
               <Link to="/admin/schedule-training">
@@ -50,7 +50,9 @@ const AdminLayout = () => {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={80}>
-          <Outlet />
+          <div className="h-full overflow-y-auto">
+            <Outlet />
+          </div>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
