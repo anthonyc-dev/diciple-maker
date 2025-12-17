@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { v4 as uuidv4 } from 'uuid';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -82,8 +82,9 @@ const ScheduleTraining = () => {
   const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>(initialTrainingSessions);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [newTraining, setNewTraining] = useState<Omit<TrainingSession, 'id' | 'date'>>({
+  const [newTraining, setNewTraining] = useState<Omit<TrainingSession, 'id'>>({
     title: "",
+    date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
     time: "",
     description: "",
     location: "",
@@ -91,11 +92,22 @@ const ScheduleTraining = () => {
     status: "upcoming",
   });
 
+  const trainingsByDate = useMemo(() => {
+    const map = new Map<string, TrainingSession[]>();
+    trainingSessions.forEach(session => {
+      const dateKey = session.date;
+      if (!map.has(dateKey)) {
+        map.set(dateKey, []);
+      }
+      map.get(dateKey)?.push(session);
+    });
+    return map;
+  }, [trainingSessions]);
+
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
     if (date) {
       setNewTraining((prev) => ({ ...prev, date: format(date, "yyyy-MM-dd") }));
-      setIsDialogOpen(true);
     }
   };
 
@@ -110,7 +122,7 @@ const ScheduleTraining = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedDate || !newTraining.title || !newTraining.time || !newTraining.description || !newTraining.location || !newTraining.trainer) {
+    if (!newTraining.date || !newTraining.title || !newTraining.time || !newTraining.description || !newTraining.location || !newTraining.trainer) {
       alert("Please fill all required fields.");
       return;
     }
@@ -118,21 +130,22 @@ const ScheduleTraining = () => {
     const newSession: TrainingSession = {
       ...newTraining,
       id: uuidv4(),
-      date: format(selectedDate, "yyyy-MM-dd"),
     };
 
     setTrainingSessions((prev) => [...prev, newSession].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
     setNewTraining({
       title: "",
+      date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
       time: "",
       description: "",
       location: "",
       trainer: "",
       status: "upcoming",
     });
-    setSelectedDate(undefined);
     setIsDialogOpen(false);
   };
+
+  const selectedDayTrainings = selectedDate ? trainingsByDate.get(format(selectedDate, "yyyy-MM-dd")) || [] : [];
 
   const upcomingSessions = trainingSessions.filter(session => new Date(session.date) >= new Date()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   const pastSessions = trainingSessions.filter(session => new Date(session.date) < new Date()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -144,7 +157,7 @@ const ScheduleTraining = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Training Calendar</CardTitle>
-            <CardDescription>Select a date to schedule a new training session.</CardDescription>
+            <CardDescription>Select a date to view or schedule training sessions.</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
             <Calendar
@@ -152,115 +165,258 @@ const ScheduleTraining = () => {
               selected={selectedDate}
               onSelect={handleDateSelect}
               className="rounded-md border"
+              modifiers={{
+                hasTrainings: Array.from(trainingsByDate.keys()).map(dateStr => new Date(dateStr)),
+              }}
+              modifiersClassNames={{
+                hasTrainings: "bg-blue-500 text-primary-foreground",
+              }}
+              // onDayClick will be handled by onSelect
             />
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl">Add New Training</CardTitle>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" onClick={() => { setSelectedDate(undefined); setNewTraining((prev) => ({ ...prev, date: "" })); }}>
-                  <Plus className="mr-2 h-4 w-4" /> Add Manually
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Add Training Session</DialogTitle>
-                  <DialogDescription>
-                    Fill in the details for the new training session.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit}>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="title" className="text-right">
-                        Title
-                      </Label>
-                      <Input id="title" value={newTraining.title} onChange={handleInputChange} className="col-span-3" required />
+        {selectedDate && selectedDayTrainings.length > 0 ? (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-2xl">Trainings on {format(selectedDate, "PPP")}</CardTitle>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" onClick={() => setNewTraining((prev) => ({ ...prev, date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "" }))}>
+                    <Plus className="mr-2 h-4 w-4" /> Add Training
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Add Training Session</DialogTitle>
+                    <DialogDescription>
+                      Fill in the details for the new training session.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleSubmit}>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="title" className="text-right">
+                          Title
+                        </Label>
+                        <Input id="title" value={newTraining.title} onChange={handleInputChange} className="col-span-3" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="description" className="text-right">
+                          Description
+                        </Label>
+                        <Textarea id="description" value={newTraining.description} onChange={handleInputChange} className="col-span-3" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="date" className="text-right">
+                          Date
+                        </Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full justify-start text-left font-normal col-span-3",
+                                !newTraining.date && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {newTraining.date ? format(new Date(newTraining.date), "PPP") : <span>Pick a date</span>}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={selectedDate} // Use selectedDate for Calendar display
+                              onSelect={handleDateSelect} // Updates selectedDate AND newTraining.date
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="time" className="text-right">
+                          Time
+                        </Label>
+                        <Input id="time" value={newTraining.time} onChange={handleInputChange} className="col-span-3" placeholder="e.g., 10:00 AM - 12:00 PM" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="location" className="text-right">
+                          Location
+                        </Label>
+                        <Input id="location" value={newTraining.location} onChange={handleInputChange} className="col-span-3" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="trainer" className="text-right">
+                          Trainer
+                        </Label>
+                        <Input id="trainer" value={newTraining.trainer} onChange={handleInputChange} className="col-span-3" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="status" className="text-right">
+                          Status
+                        </Label>
+                        <Select value={newTraining.status} onValueChange={(value) => handleSelectChange(value, 'status')}>
+                          <SelectTrigger className="col-span-3">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="upcoming">Upcoming</SelectItem>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="description" className="text-right">
-                        Description
-                      </Label>
-                      <Textarea id="description" value={newTraining.description} onChange={handleInputChange} className="col-span-3" required />
+                    <DialogFooter>
+                      <Button type="submit">Save Training</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              {selectedDayTrainings.map((session, index) => (
+                <React.Fragment key={session.id}>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold text-lg">{session.title}</h4>
+                      <Badge
+                        variant={
+                          session.status === "upcoming"
+                            ? "default"
+                            : session.status === "active"
+                            ? "secondary"
+                            : "outline"
+                        }
+                      >
+                        {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                      </Badge>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="date" className="text-right">
-                        Date
-                      </Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal col-span-3",
-                              !selectedDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={selectedDate}
-                            onSelect={setSelectedDate}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                    <p className="text-sm text-muted-foreground">{session.description}</p>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <Clock className="mr-2 h-4 w-4" /> {session.time}
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="time" className="text-right">
-                        Time
-                      </Label>
-                      <Input id="time" value={newTraining.time} onChange={handleInputChange} className="col-span-3" placeholder="e.g., 10:00 AM - 12:00 PM" required />
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <MapPin className="mr-2 h-4 w-4" /> {session.location}
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="location" className="text-right">
-                        Location
-                      </Label>
-                      <Input id="location" value={newTraining.location} onChange={handleInputChange} className="col-span-3" required />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="trainer" className="text-right">
-                        Trainer
-                      </Label>
-                      <Input id="trainer" value={newTraining.trainer} onChange={handleInputChange} className="col-span-3" required />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="status" className="text-right">
-                        Status
-                      </Label>
-                      <Select value={newTraining.status} onValueChange={(value) => handleSelectChange(value, 'status')}>
-                        <SelectTrigger className="col-span-3">
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="upcoming">Upcoming</SelectItem>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="completed">Completed</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <User2 className="mr-2 h-4 w-4" /> {session.trainer}
                     </div>
                   </div>
-                  <DialogFooter>
-                    <Button type="submit">Save Training</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Click "Add Manually" to open the form, or select a date on the calendar to pre-fill the date field.
-            </p>
-          </CardContent>
-        </Card>
+                  {index < selectedDayTrainings.length - 1 && <Separator />}
+                </React.Fragment>
+              ))}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-2xl">Add New Training</CardTitle>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" onClick={() => { /* setSelectedDate(undefined); */ setNewTraining((prev) => ({ ...prev, date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "" })); }}>
+                    <Plus className="mr-2 h-4 w-4" /> Add Manually
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Add Training Session</DialogTitle>
+                    <DialogDescription>
+                      Fill in the details for the new training session.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleSubmit}>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="title" className="text-right">
+                          Title
+                        </Label>
+                        <Input id="title" value={newTraining.title} onChange={handleInputChange} className="col-span-3" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="description" className="text-right">
+                          Description
+                        </Label>
+                        <Textarea id="description" value={newTraining.description} onChange={handleInputChange} className="col-span-3" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="date" className="text-right">
+                          Date
+                        </Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full justify-start text-left font-normal col-span-3",
+                                !newTraining.date && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {newTraining.date ? format(new Date(newTraining.date), "PPP") : <span>Pick a date</span>}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={selectedDate}
+                              onSelect={handleDateSelect}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="time" className="text-right">
+                          Time
+                        </Label>
+                        <Input id="time" value={newTraining.time} onChange={handleInputChange} className="col-span-3" placeholder="e.g., 10:00 AM - 12:00 PM" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="location" className="text-right">
+                          Location
+                        </Label>
+                        <Input id="location" value={newTraining.location} onChange={handleInputChange} className="col-span-3" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="trainer" className="text-right">
+                          Trainer
+                        </Label>
+                        <Input id="trainer" value={newTraining.trainer} onChange={handleInputChange} className="col-span-3" required />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="status" className="text-right">
+                          Status
+                        </Label>
+                        <Select value={newTraining.status} onValueChange={(value) => handleSelectChange(value, 'status')}>
+                          <SelectTrigger className="col-span-3">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="upcoming">Upcoming</SelectItem>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit">Save Training</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Click "Add Manually" to open the form, or select a date on the calendar to pre-fill the date field.
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <Card className="flex-1">
