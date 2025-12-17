@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import { supabase } from "../supabaseClient";
 
 const Join = () => {
   const { toast } = useToast();
@@ -54,8 +55,41 @@ const Join = () => {
       return;
     }
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Insert into Supabase users table, let unique constraint handle duplicates
+    const { error } = await supabase.from("users").insert([
+      {
+        name: formData.firstName,
+        lastname: formData.lastName,
+        email: formData.email,
+        number: formData.phone,
+      },
+    ]);
+
+    if (error) {
+      // Check for duplicate key violation and show a formal validation message
+      if (
+        error.code === "23505" ||
+        (typeof error.message === "string" &&
+          error.message.toLowerCase().includes("duplicate key value"))
+      ) {
+        toast({
+          title: "Duplicate Registration",
+          description:
+            "This email address or data has already been used to join. Please use a different email address.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Submission Failed",
+          description:
+            error.message ||
+            "An error occurred while submitting. Please try again.",
+          variant: "destructive",
+        });
+      }
+      setIsSubmitting(false);
+      return;
+    }
 
     toast({
       title: "Application Submitted!",

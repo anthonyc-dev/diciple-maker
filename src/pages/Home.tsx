@@ -11,7 +11,7 @@ import VerseSection from "@/components/disciple/VerseSection";
 import GodMakesDisciples from "@/components/disciple/GodMakesDisciples";
 import FaithGallery from "@/components/disciple/FaithGallery";
 
-const Discipling = () => {
+const Home = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -30,4 +30,4 @@ const Discipling = () => {
   );
 };
 
-export default Discipling;
+export default Home;
