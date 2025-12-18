@@ -8,7 +8,8 @@ All colors MUST be HSL.
 
 /* index.css */
 body {
-  font-family: "Playfair Display", serif;
+  /* font-family: "Playfair Display", serif; */
+  font-family: "Poppins", sans-serif;
 }
 
 @layer base {
@@ -136,4 +137,8 @@ body {
   top: 4px; /* adjust vertical position */
   left: 50%;
   transform: translateX(-50%);
+}
+
+.secondary-font {
+  font-family: "Poppins", sans-serif;
 }

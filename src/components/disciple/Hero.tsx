@@ -1,5 +1,7 @@
 import heroImage from "@/assets/hero-disciples.jpg";
 import { motion, Variants } from "framer-motion";
+import { Button } from "../ui/button";
+import { ArrowRight, Link } from "lucide-react";
 
 const Hero = () => {
   const fadeInUp: Variants = {
@@ -49,7 +51,7 @@ const Hero = () => {
 
           <motion.h1
             variants={fadeInUp}
-            className="text-hero-foreground text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-none mb-6"
+            className="text-hero-foreground text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-none mb-6"
           >
             Making <span className="text-hero-accent">Disciples</span>
             <br />
@@ -65,22 +67,29 @@ const Hero = () => {
             nations.
           </motion.p>
 
-          {/* <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
-            <Button
-              size="lg"
-              className="bg-hero-accent text-primary-foreground hover:bg-hero-accent/90 font-semibold text-base px-8 group"
-            >
-              Start Your Journey
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-hero-foreground/50 text-hero-foreground bg-hero-foreground/5 hover:bg-hero-foreground/15 font-semibold text-base px-8"
-            >
-              Learn More
-            </Button>
-          </motion.div> */}
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col sm:flex-row gap-4"
+          >
+            <a href="/join">
+              <Button
+                size="lg"
+                className="bg-hero-accent text-primary-foreground hover:bg-hero-accent/90 font-semibold text-base px-8 group"
+              >
+                Start Your Journey
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </a>
+            <a href="/about">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-hero-foreground/50 text-hero-foreground bg-hero-foreground/5 hover:bg-hero-foreground/80 font-semibold text-base px-8"
+              >
+                Learn More
+              </Button>
+            </a>
+          </motion.div>
         </motion.div>
 
         {/* Side Text */}
