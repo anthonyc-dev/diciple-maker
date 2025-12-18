@@ -86,7 +86,7 @@ const Hero = () => {
                 variant="outline"
                 className="border-hero-foreground/50 text-hero-foreground bg-hero-foreground/5 hover:bg-hero-foreground/80 font-semibold text-base px-8"
               >
-                Learn More
+                Learn More About us
               </Button>
             </a>
           </motion.div>

@@ -21,14 +21,22 @@ const AdminLayout = () => {
 
   const SidebarContent = () => (
     <div className="flex h-full flex-col p-4 bg-hero text-white shadow-xl">
-      <h2 className="text-2xl font-bold mb-6 text-white">Admin Panel</h2>
-      <nav className="flex flex-col gap-2 flex-1">
+      <div className="mb-4 ml-4 gap-2">
+        <img
+          src="/discipling logo.png"
+          alt="Discipling Logo"
+          className="h-8 w-auto inline-block align-middle"
+          style={{ verticalAlign: "middle" }}
+        />
+      </div>
+
+      <nav className="flex flex-col gap-2 flex-1 mt-5">
         <Link to="/admin" onClick={() => setIsMobileSidebarOpen(false)}>
           <Button
             variant="ghost"
-            className="justify-start text-lg px-4 py-3 w-full text-blue-100 hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
+            className="justify-start text-lg px-4 py-3 w-full text-white hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
           >
-            <Users className="mr-3 h-5 w-5 text-blue-200" />
+            <Users className="mr-3 h-5 w-5 text-white" />
             Disciples
           </Button>
         </Link>
@@ -38,18 +46,18 @@ const AdminLayout = () => {
         >
           <Button
             variant="ghost"
-            className="justify-start text-lg px-4 py-3 w-full text-blue-100 hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
+            className="justify-start text-lg px-4 py-3 w-full text-white hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
           >
-            <Calendar className="mr-3 h-5 w-5 text-blue-200" />
+            <Calendar className="mr-3 h-5 w-5 text-white" />
             Schedule Training
           </Button>
         </Link>
         <Link to="/admin/events" onClick={() => setIsMobileSidebarOpen(false)}>
           <Button
             variant="ghost"
-            className="justify-start text-lg px-4 py-3 w-full text-blue-100 hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
+            className="justify-start text-lg px-4 py-3 w-full text-white hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
           >
-            <BarChart2 className="mr-3 h-5 w-5 text-blue-200" />
+            <BarChart2 className="mr-3 h-5 w-5 text-white" />
             Events
           </Button>
         </Link>
@@ -57,13 +65,13 @@ const AdminLayout = () => {
       <div className="mt-8">
         <Button
           variant="ghost"
-          className="justify-start text-lg px-4 py-3 w-full text-blue-100 hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
+          className="justify-start text-lg px-4 py-3 w-full text-white hover:text-white dark:hover:bg-gray-800 transition-colors duration-200"
           onClick={() => {
             handleLogout();
             setIsMobileSidebarOpen(false);
           }}
         >
-          <LogOut className="mr-3 h-5 w-5 text-blue-200" />
+          <LogOut className="mr-3 h-5 w-5 text-white" />
           Logout
         </Button>
       </div>
