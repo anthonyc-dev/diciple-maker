@@ -193,7 +193,7 @@ const Join = () => {
                     id="email"
                     name="email"
                     type="email"
-                    placeholder="your@example.com"
+                    placeholder="your.email@example.com"
                     value={formData.email}
                     onChange={handleChange}
                     className="bg-background border-border"

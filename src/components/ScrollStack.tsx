@@ -6,7 +6,9 @@ interface ScrollStackProps {
 }
 
 export const ScrollStackItem = ({ children }: { children: ReactNode }) => {
-  return <div className="h-screen flex items-center justify-center">{children}</div>;
+  return (
+    <div className="h-screen flex items-center justify-center">{children}</div>
+  );
 };
 
 const ScrollStack = ({ children }: ScrollStackProps) => {

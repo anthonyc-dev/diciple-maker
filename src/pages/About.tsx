@@ -287,7 +287,7 @@ const About = () => {
       </motion.section> */}
 
       {/* Timeline Section */}
-      <motion.section
+      {/* <motion.section
         className="py-20 bg-background"
         variants={sectionVariants}
         initial="hidden"
@@ -324,7 +324,7 @@ const About = () => {
             ))}
           </div>
         </div>
-      </motion.section>
+      </motion.section> */}
 
       {/* Mission Statement */}
       {/* <section className="py-20 bg-hero">
