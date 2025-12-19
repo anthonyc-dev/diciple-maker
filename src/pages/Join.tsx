@@ -18,9 +18,19 @@ const Join = () => {
     email: "",
   });
 
+  // Helper function to capitalize the first letter of each word
+  const capitalizeWords = (input: string) => {
+    return input.replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Only auto-capitalize for firstName and lastName
+    if (name === "firstName" || name === "lastName") {
+      setFormData((prev) => ({ ...prev, [name]: capitalizeWords(value) }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -165,6 +175,8 @@ const Join = () => {
                       onChange={handleChange}
                       className="bg-background border-border"
                       required
+                      autoCapitalize="words"
+                      style={{ textTransform: "capitalize" }}
                     />
                   </div>
 
@@ -181,6 +193,8 @@ const Join = () => {
                       onChange={handleChange}
                       className="bg-background border-border"
                       required
+                      autoCapitalize="words"
+                      style={{ textTransform: "capitalize" }}
                     />
                   </div>
                 </div>
