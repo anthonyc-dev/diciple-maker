@@ -98,7 +98,7 @@ const Footer = () => {
           transition={{ duration: 1, delay: 0.5 }}
         >
           <p className="text-hero-foreground/40 text-sm">
-            © 2024 Discipling Disciples. All rights reserved.
+            © 2026 Discipling Disciples. All rights reserved.
           </p>
           <div className="flex gap-6">
             <a
