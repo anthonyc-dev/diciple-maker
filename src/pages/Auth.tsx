@@ -10,6 +10,31 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
+
+function LoadingSpinner() {
+  return (
+    <svg
+      className="animate-spin mr-2 h-4 w-4 text-white inline-block"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.372 0 0 5.372 0 12h4z"
+      ></path>
+    </svg>
+  );
+}
 
 export default function Auth() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,35 +43,27 @@ export default function Auth() {
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Dummy credentials
-  const DUMMY_CREDENTIALS = {
-    email: "test@example.com",
-    password: "password123",
-  };
-
-  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     setMessage(null);
 
-    // Simulate login with dummy credentials
-    setTimeout(() => {
-      if (
-        email === DUMMY_CREDENTIALS.email &&
-        password === DUMMY_CREDENTIALS.password
-      ) {
-        setMessage("Logged in successfully! (dummy)");
-        // Direct to /home after login
-        setTimeout(() => {
-          navigate("/admin");
-        }, 700);
-      } else {
-        setMessage(
-          "Invalid credentials. Please use test@example.com / password123."
-        );
-      }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setMessage(error.message || "Login failed. Please try again.");
       setLoading(false);
-    }, 600);
+      return;
+    }
+
+    setMessage("Logged in successfully!");
+    setTimeout(() => {
+      navigate("/admin");
+    }, 700);
+    setLoading(false);
   };
 
   return (
@@ -55,8 +72,7 @@ export default function Auth() {
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
-            Enter your email and password to log in (use{" "}
-            <span className="font-mono">test@example.com / password123</span>)
+            Enter your email and password to log in
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -66,7 +82,7 @@ export default function Auth() {
               <Input
                 id="email"
                 type="email"
-                placeholder="your@email.com"
+                placeholder="admin.email@example.com"
                 value={email}
                 autoComplete="email"
                 required
@@ -88,10 +104,23 @@ export default function Auth() {
               />
             </div>
             <Button type="submit" className="w-full mt-2" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <LoadingSpinner />
+                  Logging in...
+                </span>
+              ) : (
+                "Login"
+              )}
             </Button>
             {message && (
-              <div className="text-sm text-center mt-2 text-destructive">
+              <div
+                className={`inline-block mx-auto mt-2 rounded-full px-3 py-1 text-sm font-medium text-center ${
+                  message === "Logged in successfully!"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+              >
                 {message}
               </div>
             )}
