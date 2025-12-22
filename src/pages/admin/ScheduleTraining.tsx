@@ -8,15 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  Calendar as CalendarIcon,
-  MapPin,
-  User2,
-  Clock,
-  Plus,
-  Edit,
-  Trash2,
-} from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, Clock, Plus } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
@@ -31,8 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { format, isSameDay } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
+import { format } from "date-fns";
 import {
   Popover,
   PopoverContent,
@@ -46,101 +37,73 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { supabase } from "@/supabaseClient";
+type TrainingStatus = "scheduled" | "ongoing" | "completed" | "cancelled";
 
 interface TrainingSession {
   id: string;
   title: string;
-  date: string; // e.g., "YYYY-MM-DD"
-  time: string; // e.g., "HH:MM AM/PM"
   description: string;
+  training_date: string; // "YYYY-MM-DD"
+  training_time: string; // "HH:MM:SS"
   location: string;
-  trainer: string;
-  status: "upcoming" | "active" | "completed" | "cancelled";
+  status: TrainingStatus;
+  created_at?: string;
+  updated_at?: string;
 }
-
-const initialTrainingSessions: TrainingSession[] = [
-  {
-    id: "ts1",
-    title: "Foundations of Discipleship",
-    date: "2024-12-20",
-    time: "10:00 AM - 12:00 PM",
-    description:
-      "An introductory course on the core principles of discipleship, focusing on spiritual growth and biblical understanding.",
-    location: "Online (Zoom)",
-    trainer: "Pastor John Doe",
-    status: "upcoming",
-  },
-  {
-    id: "ts2",
-    title: "Evangelism & Outreach Workshop",
-    date: "2025-01-15",
-    time: "06:00 PM - 08:00 PM",
-    description:
-      "Practical strategies and tools for effective evangelism in your community. Learn to share your faith confidently.",
-    location: "Community Church Hall",
-    trainer: "Evangelist Jane Smith",
-    status: "upcoming",
-  },
-  {
-    id: "ts3",
-    title: "Leadership Development for Disciple Makers",
-    date: "2025-02-10",
-    time: "09:00 AM - 01:00 PM",
-    description:
-      "Equipping leaders to multiply disciples and establish thriving ministry groups. Advanced principles of spiritual leadership.",
-    location: "City Conference Center, Room 301",
-    trainer: "Dr. Peter Jones",
-    status: "upcoming",
-  },
-  {
-    id: "ts4",
-    title: "Advanced Biblical Studies: Book of Romans",
-    date: "2025-03-05",
-    time: "07:00 PM - 09:00 PM",
-    description:
-      "A deep dive into the theological richness of the Apostle Paul's letter to the Romans. Requires prior biblical knowledge.",
-    location: "Online (Google Meet)",
-    trainer: "Prof. Mary Brown",
-    status: "upcoming",
-  },
-];
 
 type RightPanelMode = "addTraining" | "viewDetails" | "initial";
 
 const ScheduleTraining = () => {
   const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>(
-    initialTrainingSessions
+    []
   );
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newTraining, setNewTraining] = useState<Omit<TrainingSession, "id">>({
     title: "",
-    date: "", // Will be set on date selection or Add Manually
-    time: "",
     description: "",
+    training_date: "", // Will be set on date selection or Add Manually
+    training_time: "",
     location: "",
-    trainer: "",
-    status: "upcoming",
+    status: "scheduled",
   });
   const [rightPanelMode, setRightPanelMode] =
     useState<RightPanelMode>("initial");
 
-  // Effect to update newTraining.date when selectedDate changes (for dialog pre-fill)
+  // Fetch trainings from Supabase
+  useEffect(() => {
+    const fetchTrainings = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("training")
+        .select("*")
+        .order("training_date", { ascending: true });
+      if (!error && data) {
+        setTrainingSessions(data as TrainingSession[]);
+      }
+      setLoading(false);
+    };
+    fetchTrainings();
+  }, []);
+
+  // Effect to update newTraining.training_date when selectedDate changes
   useEffect(() => {
     if (selectedDate) {
       setNewTraining((prev) => ({
         ...prev,
-        date: format(selectedDate, "yyyy-MM-dd"),
+        training_date: format(selectedDate, "yyyy-MM-dd"),
       }));
     } else {
-      setNewTraining((prev) => ({ ...prev, date: "" }));
+      setNewTraining((prev) => ({ ...prev, training_date: "" }));
     }
   }, [selectedDate]);
 
   const trainingsByDate = useMemo(() => {
     const map = new Map<string, TrainingSession[]>();
     trainingSessions.forEach((session) => {
-      const dateKey = session.date;
+      const dateKey = session.training_date;
       if (!map.has(dateKey)) {
         map.set(dateKey, []);
       }
@@ -177,41 +140,51 @@ const ScheduleTraining = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
-      !newTraining.date ||
+      !newTraining.training_date ||
       !newTraining.title ||
-      !newTraining.time ||
+      !newTraining.training_time ||
       !newTraining.description ||
-      !newTraining.location ||
-      !newTraining.trainer
+      !newTraining.location
     ) {
       alert("Please fill all required fields.");
       return;
     }
 
-    const newSession: TrainingSession = {
+    const insertData = {
       ...newTraining,
-      id: uuidv4(),
     };
 
-    setTrainingSessions((prev) =>
-      [...prev, newSession].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-      )
-    );
+    const { data, error } = await supabase
+      .from("training")
+      .insert([insertData])
+      .select()
+      .single();
+
+    if (error) {
+      alert("Failed to add training: " + error.message);
+      return;
+    } else if (data) {
+      setTrainingSessions((prev) =>
+        [...prev, data as TrainingSession].sort(
+          (a, b) =>
+            new Date(a.training_date).getTime() -
+            new Date(b.training_date).getTime()
+        )
+      );
+    }
     setNewTraining({
       title: "",
-      date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
-      time: "",
       description: "",
+      training_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
+      training_time: "",
       location: "",
-      trainer: "",
-      status: "upcoming",
+      status: "scheduled",
     });
     setIsDialogOpen(false);
-    // After adding, if a date was selected, switch to view details for that date
+
     if (selectedDate) {
       setRightPanelMode("viewDetails");
     }
@@ -221,12 +194,27 @@ const ScheduleTraining = () => {
     ? trainingsByDate.get(format(selectedDate, "yyyy-MM-dd")) || []
     : [];
 
-  const upcomingSessions = trainingSessions
-    .filter((session) => new Date(session.date) >= new Date())
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  const pastSessions = trainingSessions
-    .filter((session) => new Date(session.date) < new Date())
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const upcomingSessions = useMemo(() => {
+    const today = new Date();
+    return trainingSessions
+      .filter((session) => new Date(session.training_date) >= today)
+      .sort(
+        (a, b) =>
+          new Date(a.training_date).getTime() -
+          new Date(b.training_date).getTime()
+      );
+  }, [trainingSessions]);
+
+  const pastSessions = useMemo(() => {
+    const today = new Date();
+    return trainingSessions
+      .filter((session) => new Date(session.training_date) < today)
+      .sort(
+        (a, b) =>
+          new Date(b.training_date).getTime() -
+          new Date(a.training_date).getTime()
+      );
+  }, [trainingSessions]);
 
   const renderAddTrainingForm = (title: string, description: string) => (
     <Card>
@@ -240,7 +228,9 @@ const ScheduleTraining = () => {
               onClick={() => {
                 setNewTraining((prev) => ({
                   ...prev,
-                  date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
+                  training_date: selectedDate
+                    ? format(selectedDate, "yyyy-MM-dd")
+                    : "",
                 }));
               }}
             >
@@ -269,7 +259,10 @@ const ScheduleTraining = () => {
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="md:text-right text-left">
+                  <Label
+                    htmlFor="description"
+                    className="md:text-right text-left"
+                  >
                     Description
                   </Label>
                   <Textarea
@@ -281,7 +274,10 @@ const ScheduleTraining = () => {
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                  <Label htmlFor="date" className="md:text-right text-left">
+                  <Label
+                    htmlFor="training_date"
+                    className="md:text-right text-left"
+                  >
                     Date
                   </Label>
                   <Popover>
@@ -290,12 +286,12 @@ const ScheduleTraining = () => {
                         variant={"outline"}
                         className={cn(
                           "w-full justify-start text-left font-normal md:col-span-3 col-span-full",
-                          !newTraining.date && "text-muted-foreground"
+                          !newTraining.training_date && "text-muted-foreground"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {newTraining.date ? (
-                          format(new Date(newTraining.date), "PPP")
+                        {newTraining.training_date ? (
+                          format(new Date(newTraining.training_date), "PPP")
                         ) : (
                           <span>Pick a date</span>
                         )}
@@ -304,7 +300,11 @@ const ScheduleTraining = () => {
                     <PopoverContent className="w-auto p-0">
                       <Calendar
                         mode="single"
-                        selected={selectedDate}
+                        selected={
+                          newTraining.training_date
+                            ? new Date(newTraining.training_date)
+                            : undefined
+                        }
                         onSelect={handleDateSelect}
                         initialFocus
                       />
@@ -312,15 +312,18 @@ const ScheduleTraining = () => {
                   </Popover>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                  <Label htmlFor="time" className="md:text-right text-left">
+                  <Label
+                    htmlFor="training_time"
+                    className="md:text-right text-left"
+                  >
                     Time
                   </Label>
                   <Input
-                    id="time"
-                    value={newTraining.time}
+                    id="training_time"
+                    type="time"
+                    value={newTraining.training_time}
                     onChange={handleInputChange}
                     className="md:col-span-3 col-span-full"
-                    placeholder="e.g., 10:00 AM - 12:00 PM"
                     required
                   />
                 </div>
@@ -331,18 +334,6 @@ const ScheduleTraining = () => {
                   <Input
                     id="location"
                     value={newTraining.location}
-                    onChange={handleInputChange}
-                    className="md:col-span-3 col-span-full"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                  <Label htmlFor="trainer" className="md:text-right text-left">
-                    Trainer
-                  </Label>
-                  <Input
-                    id="trainer"
-                    value={newTraining.trainer}
                     onChange={handleInputChange}
                     className="md:col-span-3 col-span-full"
                     required
@@ -362,8 +353,8 @@ const ScheduleTraining = () => {
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="upcoming">Upcoming</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="scheduled">Scheduled</SelectItem>
+                      <SelectItem value="ongoing">Ongoing</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
                       <SelectItem value="cancelled">Cancelled</SelectItem>
                     </SelectContent>
@@ -407,7 +398,6 @@ const ScheduleTraining = () => {
               modifiersClassNames={{
                 hasTrainings: "has-trainings",
               }}
-              // onDayClick will be handled by onSelect
             />
           </CardContent>
         </Card>
@@ -428,7 +418,7 @@ const ScheduleTraining = () => {
                     onClick={() =>
                       setNewTraining((prev) => ({
                         ...prev,
-                        date: selectedDate
+                        training_date: selectedDate
                           ? format(selectedDate, "yyyy-MM-dd")
                           : "",
                       }))
@@ -471,7 +461,7 @@ const ScheduleTraining = () => {
                         />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="date" className="text-right">
+                        <Label htmlFor="training_date" className="text-right">
                           Date
                         </Label>
                         <Popover>
@@ -480,12 +470,16 @@ const ScheduleTraining = () => {
                               variant={"outline"}
                               className={cn(
                                 "w-full justify-start text-left font-normal col-span-3",
-                                !newTraining.date && "text-muted-foreground"
+                                !newTraining.training_date &&
+                                  "text-muted-foreground"
                               )}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />
-                              {newTraining.date ? (
-                                format(new Date(newTraining.date), "PPP")
+                              {newTraining.training_date ? (
+                                format(
+                                  new Date(newTraining.training_date),
+                                  "PPP"
+                                )
                               ) : (
                                 <span>Pick a date</span>
                               )}
@@ -494,7 +488,11 @@ const ScheduleTraining = () => {
                           <PopoverContent className="w-auto p-0">
                             <Calendar
                               mode="single"
-                              selected={selectedDate}
+                              selected={
+                                newTraining.training_date
+                                  ? new Date(newTraining.training_date)
+                                  : undefined
+                              }
                               onSelect={handleDateSelect}
                               initialFocus
                             />
@@ -502,15 +500,15 @@ const ScheduleTraining = () => {
                         </Popover>
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="time" className="text-right">
+                        <Label htmlFor="training_time" className="text-right">
                           Time
                         </Label>
                         <Input
-                          id="time"
-                          value={newTraining.time}
+                          id="training_time"
+                          type="time"
+                          value={newTraining.training_time}
                           onChange={handleInputChange}
                           className="col-span-3"
-                          placeholder="e.g., 10:00 AM - 12:00 PM"
                           required
                         />
                       </div>
@@ -521,18 +519,6 @@ const ScheduleTraining = () => {
                         <Input
                           id="location"
                           value={newTraining.location}
-                          onChange={handleInputChange}
-                          className="col-span-3"
-                          required
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="trainer" className="text-right">
-                          Trainer
-                        </Label>
-                        <Input
-                          id="trainer"
-                          value={newTraining.trainer}
                           onChange={handleInputChange}
                           className="col-span-3"
                           required
@@ -552,8 +538,8 @@ const ScheduleTraining = () => {
                             <SelectValue placeholder="Select status" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="upcoming">Upcoming</SelectItem>
-                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="scheduled">Scheduled</SelectItem>
+                            <SelectItem value="ongoing">Ongoing</SelectItem>
                             <SelectItem value="completed">Completed</SelectItem>
                             <SelectItem value="cancelled">Cancelled</SelectItem>
                           </SelectContent>
@@ -577,9 +563,9 @@ const ScheduleTraining = () => {
                       </h4>
                       <Badge
                         variant={
-                          session.status === "upcoming"
+                          session.status === "scheduled"
                             ? "default"
-                            : session.status === "active"
+                            : session.status === "ongoing"
                             ? "secondary"
                             : "outline"
                         }
@@ -594,11 +580,7 @@ const ScheduleTraining = () => {
                     <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 dark:text-gray-300">
                       <div className="flex items-center">
                         <Clock className="mr-2 h-4 w-4 text-hero-accent" />{" "}
-                        {session.time}
-                      </div>
-                      <div className="flex items-center">
-                        <User2 className="mr-2 h-4 w-4 text-hero-accent" />{" "}
-                        {session.trainer}
+                        {session.training_time}
                       </div>
                       <div className="flex items-center">
                         <MapPin className="mr-2 h-4 w-4 text-hero-accent" />{" "}
@@ -634,7 +616,9 @@ const ScheduleTraining = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {upcomingSessions.length > 0 ? (
+          {loading ? (
+            <p className="text-muted-foreground">Loading...</p>
+          ) : upcomingSessions.length > 0 ? (
             upcomingSessions.map((session, index) => (
               <React.Fragment key={session.id}>
                 <Card className="shadow-sm hover:shadow-md transition-shadow">
@@ -644,9 +628,9 @@ const ScheduleTraining = () => {
                     </CardTitle>
                     <Badge
                       variant={
-                        session.status === "upcoming"
+                        session.status === "scheduled"
                           ? "default"
-                          : session.status === "active"
+                          : session.status === "ongoing"
                           ? "secondary"
                           : "outline"
                       }
@@ -660,16 +644,14 @@ const ScheduleTraining = () => {
                       {session.description}
                     </p>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <CalendarIcon className="mr-2 h-4 w-4" /> {session.date}
+                      <CalendarIcon className="mr-2 h-4 w-4" />{" "}
+                      {format(new Date(session.training_date), "yyyy-MM-dd")}
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <Clock className="mr-2 h-4 w-4" /> {session.time}
+                      <Clock className="mr-2 h-4 w-4" /> {session.training_time}
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
                       <MapPin className="mr-2 h-4 w-4" /> {session.location}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <User2 className="mr-2 h-4 w-4" /> {session.trainer}
                     </div>
                   </CardContent>
                 </Card>
@@ -712,16 +694,14 @@ const ScheduleTraining = () => {
                       {session.description}
                     </p>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <CalendarIcon className="mr-2 h-4 w-4" /> {session.date}
+                      <CalendarIcon className="mr-2 h-4 w-4" />{" "}
+                      {format(new Date(session.training_date), "yyyy-MM-dd")}
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <Clock className="mr-2 h-4 w-4" /> {session.time}
+                      <Clock className="mr-2 h-4 w-4" /> {session.training_time}
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
                       <MapPin className="mr-2 h-4 w-4" /> {session.location}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <User2 className="mr-2 h-4 w-4" /> {session.trainer}
                     </div>
                   </CardContent>
                 </Card>
