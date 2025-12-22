@@ -7,6 +7,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
+import CryptoJS from "crypto-js";
+
+const secretKey = import.meta.env.VITE_SECRETKEY;
 
 const Join = () => {
   const { toast } = useToast();
@@ -65,13 +68,16 @@ const Join = () => {
       return;
     }
 
+    //encrypt data
+    const encrypt = (data) => CryptoJS.AES.encrypt(data, secretKey).toString();
+
     // Insert into Supabase users table, let unique constraint handle duplicates
     const { error } = await supabase.from("users").insert([
       {
-        name: formData.firstName,
-        lastname: formData.lastName,
-        email: formData.email,
-        number: formData.phone,
+        name: encrypt(formData.firstName),
+        lastname: encrypt(formData.lastName),
+        email: encrypt(formData.email),
+        number: encrypt(formData.phone),
       },
     ]);
 

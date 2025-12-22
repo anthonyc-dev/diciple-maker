@@ -20,8 +20,23 @@ import {
   Trash2,
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import CryptoJS from "crypto-js";
 
 import { supabase } from "../../supabaseClient";
+
+const secretKey = import.meta.env.VITE_SECRETKEY;
+
+//decrypt the data
+const decrypt = (cipherText: string): string => {
+  if (!cipherText) return "";
+  try {
+    const bytes = CryptoJS.AES.decrypt(cipherText, secretKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  } catch (error) {
+    console.error("Decryption error:", error);
+    return cipherText;
+  }
+};
 
 const USERS_PER_PAGE = 10;
 
@@ -53,8 +68,16 @@ const HomeAdmin = () => {
       setAllUsers([]);
       setTotalUsers(0);
     } else {
-      setAllUsers(data || []);
-      setTotalUsers(data?.length || 0);
+      // Decrypt user data
+      const decryptedUsers = (data || []).map((user) => ({
+        ...user,
+        name: decrypt(user.name),
+        lastname: decrypt(user.lastname),
+        email: decrypt(user.email),
+        number: decrypt(user.number),
+      }));
+      setAllUsers(decryptedUsers);
+      setTotalUsers(decryptedUsers.length);
     }
     setLoading(false);
   };
