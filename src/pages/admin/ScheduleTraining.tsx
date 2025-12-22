@@ -8,7 +8,14 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calendar as CalendarIcon, MapPin, Clock, Plus } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  MapPin,
+  Clock,
+  Plus,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
@@ -54,6 +61,15 @@ interface TrainingSession {
 
 type RightPanelMode = "addTraining" | "viewDetails" | "initial";
 
+function formatPHTime(timeString) {
+  const [hour, minute] = timeString.split(":");
+  let h = parseInt(hour, 10);
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12;
+  if (h === 0) h = 12;
+  return `${h}:${minute} ${ampm}`;
+}
+
 const ScheduleTraining = () => {
   const [trainingSessions, setTrainingSessions] = useState<TrainingSession[]>(
     []
@@ -61,10 +77,13 @@ const ScheduleTraining = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingTrainingId, setEditingTrainingId] = useState<string | null>(
+    null
+  );
   const [newTraining, setNewTraining] = useState<Omit<TrainingSession, "id">>({
     title: "",
     description: "",
-    training_date: "", // Will be set on date selection or Add Manually
+    training_date: "",
     training_time: "",
     location: "",
     status: "scheduled",
@@ -153,28 +172,56 @@ const ScheduleTraining = () => {
       return;
     }
 
-    const insertData = {
-      ...newTraining,
-    };
+    if (editingTrainingId) {
+      // Update existing training
+      const { error } = await supabase
+        .from("training")
+        .update(newTraining)
+        .eq("id", editingTrainingId);
 
-    const { data, error } = await supabase
-      .from("training")
-      .insert([insertData])
-      .select()
-      .single();
+      if (error) {
+        alert("Failed to update training: " + error.message);
+        console.error("Update error:", error);
+        return;
+      }
 
-    if (error) {
-      alert("Failed to add training: " + error.message);
-      return;
-    } else if (data) {
+      // Update local state with the new training data
       setTrainingSessions((prev) =>
-        [...prev, data as TrainingSession].sort(
-          (a, b) =>
-            new Date(a.training_date).getTime() -
-            new Date(b.training_date).getTime()
-        )
+        prev
+          .map((session) =>
+            session.id === editingTrainingId
+              ? { ...session, ...newTraining }
+              : session
+          )
+          .sort(
+            (a, b) =>
+              new Date(a.training_date).getTime() -
+              new Date(b.training_date).getTime()
+          )
       );
+    } else {
+      // Create new training
+      const { data, error } = await supabase
+        .from("training")
+        .insert([newTraining])
+        .select()
+        .single();
+
+      if (error) {
+        alert("Failed to add training: " + error.message);
+        return;
+      } else if (data) {
+        setTrainingSessions((prev) =>
+          [...prev, data as TrainingSession].sort(
+            (a, b) =>
+              new Date(a.training_date).getTime() -
+              new Date(b.training_date).getTime()
+          )
+        );
+      }
     }
+
+    // Reset form
     setNewTraining({
       title: "",
       description: "",
@@ -183,10 +230,63 @@ const ScheduleTraining = () => {
       location: "",
       status: "scheduled",
     });
+    setEditingTrainingId(null);
     setIsDialogOpen(false);
 
     if (selectedDate) {
       setRightPanelMode("viewDetails");
+    }
+  };
+
+  const handleEdit = (session: TrainingSession) => {
+    setEditingTrainingId(session.id);
+    setNewTraining({
+      title: session.title,
+      description: session.description,
+      training_date: session.training_date,
+      training_time: session.training_time,
+      location: session.location,
+      status: session.status,
+    });
+    // Update selected date to match the training date
+    setSelectedDate(new Date(session.training_date));
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = async (sessionId: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this training session? This action cannot be undone."
+    );
+    if (!confirmed) return;
+
+    // Get the training to check its date before deletion
+    const trainingToDelete = trainingSessions.find((s) => s.id === sessionId);
+    const trainingDate = trainingToDelete?.training_date;
+
+    const { error } = await supabase
+      .from("training")
+      .delete()
+      .eq("id", sessionId);
+
+    if (error) {
+      alert("Failed to delete training: " + error.message);
+      console.error("Delete error:", error);
+      return;
+    }
+
+    // Update state after successful deletion
+    const updatedSessions = trainingSessions.filter((s) => s.id !== sessionId);
+    setTrainingSessions(updatedSessions);
+
+    // Reset selected date if the deleted training was the last one on that date
+    if (selectedDate && trainingDate) {
+      const dateKey = format(selectedDate, "yyyy-MM-dd");
+      const remainingTrainings = updatedSessions.filter(
+        (s) => s.training_date === dateKey
+      );
+      if (remainingTrainings.length === 0) {
+        setRightPanelMode("addTraining");
+      }
     }
   };
 
@@ -226,6 +326,7 @@ const ScheduleTraining = () => {
               variant="outline"
               size="sm"
               onClick={() => {
+                setEditingTrainingId(null);
                 setNewTraining((prev) => ({
                   ...prev,
                   training_date: selectedDate
@@ -234,14 +335,20 @@ const ScheduleTraining = () => {
                 }));
               }}
             >
-              <Plus className="mr-2 h-4 w-4" /> Add Training
+              <Plus className="mr-2 h-4 w-4" /> Add
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Add Training Session</DialogTitle>
+              <DialogTitle>
+                {editingTrainingId
+                  ? "Edit Training Session"
+                  : "Add Training Session"}
+              </DialogTitle>
               <DialogDescription>
-                Fill in the details for the new training session.
+                {editingTrainingId
+                  ? "Update the details for this training session."
+                  : "Fill in the details for the new training session."}
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit}>
@@ -362,7 +469,29 @@ const ScheduleTraining = () => {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save Training</Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setIsDialogOpen(false);
+                    setEditingTrainingId(null);
+                    setNewTraining({
+                      title: "",
+                      description: "",
+                      training_date: selectedDate
+                        ? format(selectedDate, "yyyy-MM-dd")
+                        : "",
+                      training_time: "",
+                      location: "",
+                      status: "scheduled",
+                    });
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {editingTrainingId ? "Update Training" : "Save Training"}
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -415,16 +544,17 @@ const ScheduleTraining = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() =>
+                    onClick={() => {
+                      setEditingTrainingId(null);
                       setNewTraining((prev) => ({
                         ...prev,
                         training_date: selectedDate
                           ? format(selectedDate, "yyyy-MM-dd")
                           : "",
-                      }))
-                    }
+                      }));
+                    }}
                   >
-                    <Plus className="mr-2 h-4 w-4" /> Add Training
+                    <Plus className="mr-2 h-4 w-4" /> Add
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
@@ -547,7 +677,31 @@ const ScheduleTraining = () => {
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button type="submit">Save Training</Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setIsDialogOpen(false);
+                          setEditingTrainingId(null);
+                          setNewTraining({
+                            title: "",
+                            description: "",
+                            training_date: selectedDate
+                              ? format(selectedDate, "yyyy-MM-dd")
+                              : "",
+                            training_time: "",
+                            location: "",
+                            status: "scheduled",
+                          });
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit">
+                        {editingTrainingId
+                          ? "Update Training"
+                          : "Save Training"}
+                      </Button>
                     </DialogFooter>
                   </form>
                 </DialogContent>
@@ -577,15 +731,31 @@ const ScheduleTraining = () => {
                     <p className="text-sm text-muted-foreground mb-3">
                       {session.description}
                     </p>
-                    <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 dark:text-gray-300">
+                    <div className="flex gap-2 text-sm text-gray-700 dark:text-gray-300 mb-3">
                       <div className="flex items-center">
                         <Clock className="mr-2 h-4 w-4 text-hero-accent" />{" "}
-                        {session.training_time}
+                        {formatPHTime(session.training_time)}
                       </div>
                       <div className="flex items-center">
                         <MapPin className="mr-2 h-4 w-4 text-hero-accent" />{" "}
                         {session.location}
                       </div>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(session)}
+                      >
+                        <Pencil className="mr-2 h-4 w-4" /> Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(session.id)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                      </Button>
                     </div>
                   </Card>
                   {index < selectedDayTrainings.length - 1 && (
@@ -648,7 +818,8 @@ const ScheduleTraining = () => {
                       {format(new Date(session.training_date), "yyyy-MM-dd")}
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <Clock className="mr-2 h-4 w-4" /> {session.training_time}
+                      <Clock className="mr-2 h-4 w-4" />{" "}
+                      {formatPHTime(session.training_time)}
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
                       <MapPin className="mr-2 h-4 w-4" /> {session.location}
@@ -698,7 +869,8 @@ const ScheduleTraining = () => {
                       {format(new Date(session.training_date), "yyyy-MM-dd")}
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <Clock className="mr-2 h-4 w-4" /> {session.training_time}
+                      <Clock className="mr-2 h-4 w-4" />{" "}
+                      {formatPHTime(session.training_time)}
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
                       <MapPin className="mr-2 h-4 w-4" /> {session.location}

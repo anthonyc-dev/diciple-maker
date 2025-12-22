@@ -284,7 +284,7 @@ const HomeAdmin = () => {
                       key={user.id}
                       className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
                     >
-                      <TableCell className="font-medium text-gray-900 dark:text-gray-100">
+                      <TableCell className="font-medium text-gray-700 dark:text-gray-100">
                         {user.name || "-"}
                       </TableCell>
                       <TableCell className="text-gray-700 dark:text-gray-300">
