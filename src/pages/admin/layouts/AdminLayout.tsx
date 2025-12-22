@@ -11,9 +11,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogFooter,
+  // If your library has one, import VisuallyHidden here if you ever want to hide DialogTitle
 } from "@/components/ui/dialog";
 import { supabase } from "../../../supabaseClient";
 
@@ -97,10 +97,10 @@ const AdminLayout = () => {
       {/* Logout Confirmation Modal */}
       <Dialog open={isLogoutModalOpen} onOpenChange={setIsLogoutModalOpen}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Logout</DialogTitle>
-          </DialogHeader>
-          <div>Are you sure you want to logout?</div>
+          <DialogTitle>Confirm Logout</DialogTitle>
+          <div id="logout-dialog-description">
+            Are you sure you want to logout?
+          </div>
           <DialogFooter>
             <Button
               variant="secondary"
@@ -158,6 +158,7 @@ const AdminLayout = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-[250px]">
+              <DialogTitle></DialogTitle>
               <SidebarContent />
             </SheetContent>
           </Sheet>
@@ -165,7 +166,6 @@ const AdminLayout = () => {
 
         {/* Desktop Layout */}
         <div className="hidden lg:flex flex-1 h-screen">
-          {/* Ensure full height on desktop */}
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={20} minSize={15} maxSize={25}>
               <SidebarContent />
@@ -181,7 +181,6 @@ const AdminLayout = () => {
 
         {/* Content Area for Mobile - only Outlet */}
         <div className="lg:hidden flex-1 flex flex-col pt-16">
-          {/* Adjust padding for mobile header */}
           <div className="h-full overflow-y-auto">
             <Outlet />
           </div>
