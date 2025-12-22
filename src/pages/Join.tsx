@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import CryptoJS from "crypto-js";
 
+//secret key
 const secretKey = import.meta.env.VITE_SECRETKEY;
 
 const Join = () => {
